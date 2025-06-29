@@ -5,7 +5,7 @@ Help the girls of After School Tea Time to recover their lost items in this Arch
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
 - [PPSSPP](https://www.ppsspp.org/)
 - [The latest `kon.apworld` file.](https://github.com/dannybonz/k-on_archipelago/releases/latest)
-- K-On! After School Live!! PSP ISO (ULJM05709). The standard Japanese release or the [fan-made English translation patch](https://frain-breeze.github.io/kon/) are both compatible.
+- K-On! After School Live!! PSP ISO (ULJM05709). The standard Japanese release or the fan-made English translation patch are both compatible.
 
 ## Installing the APWorld
 - To install the APWorld, open the Archipelago Launcher and click on "Install APWorld", then select your `kon.apworld` file.
