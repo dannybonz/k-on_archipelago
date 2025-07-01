@@ -1,4 +1,4 @@
-import websockets, json, requests, struct, base64, asyncio, traceback
+import websockets, json, requests, struct, base64, asyncio, traceback, ipaddress
 
 from .Data import EVENT_FLAGS_FROM_ADDRESS, SNACKS, SONGS, SNACK_NAME_FROM_ADDRESS, SONG_FLAGS_FROM_ADDRESS, PROP_FLAGS_FROM_ADDRESS, PROPS, CHARACTERS, OUTFITS, EVENT_TITLES_FROM_INGAME_ID, EVENTS, OUTFIT_MAPPING, HARD_SONGS
 
@@ -109,18 +109,22 @@ class KONInterface:
             if not data:
                 print("Couldn't fetch from API.")
                 return None
+
+            #Look for the first IPv4 address
+            for instance in data:
+                ip = instance.get("ip")
+                port = instance.get("p")
+                if ip and port:
+                    try:
+                        if ipaddress.ip_address(ip).version == 4:
+                            ws_url = f"ws://{ip}:{port}/debugger"
+                            print("Found PPSSPP WebSocket.")
+                            return ws_url
+                    except ValueError:
+                        continue  #Skip invalid IP formats
             
-            first_instance = data[0]
-            ip, port = first_instance.get("ip"), first_instance.get("p")
-
-            if not ip or not port:
-                print("Missing IP or Port in the API response.")
-                return None
-
-            ws_url = f"ws://{ip}:{port}/debugger"
-            print("Found PPSSPP WebSocket.")
-            return ws_url
-
+            print("No IPv4 addresses found.")
+            return None
         except requests.RequestException as e:
             print(f"Error fetching PPSSPP instances: {e}")
             return None
