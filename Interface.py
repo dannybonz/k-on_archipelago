@@ -48,11 +48,11 @@ class KONInterface:
 
     #Unlockables
     LOAD_SONG_LIST_FUNC_ADDRESS = 0x886d5a4 #Triggers when selecting the song list
-    LOAD_UNLOCKED_SONGS_FUNC_ADDRESS = 0x89d4d18 #Triggers when loading which specific songs have been unlocked
+    LOAD_UNLOCKED_SONGS_FUNC_ADDRESS = 0x885d8f4 #Triggers when loading which specific songs have been unlocked
     INVENTORY_OPEN_FUNC_ADDRESS = 0x88ad4f4 #Triggers when opening the inventory
     OUTFIT_OPEN_FUNC_ADDRESS = 0x885430c #Triggers when visiting the outfit screen
     START_EVENT_FUNC_ADDRESS = 0x0896d974 #Triggers when an event is started
-    
+
     def __init__(self, logger) -> None:
         self.logger = logger
         self.ws = None  #WebSocket connection
@@ -423,7 +423,7 @@ class KONInterface:
                         replacement_outfit = next(outfit for outfit in self.outfits_received if outfit.startswith(character))
                         outfits_to_write[self.OUTFIT_ADDRESS_FROM_CHAR[character]] = OUTFITS[replacement_outfit]["ingame_id"]
 
-                memory_to_write = self.unlock_all_titles() | outfits_to_write | {self.SONG_COUNT_ADDRESS: 20} | (self.set_unlocked_props(list(PROPS.keys()))) | (self.set_unlocked_outfits(list(OUTFITS.keys()))) #Unlocks EVERYTHING - means you won't get popups at the end! (hopefully?)
+                memory_to_write = self.set_unlocked_songs(self.songs_received) | self.set_unlocked_hard_songs(self.hard_songs_received) | self.unlock_all_titles() | outfits_to_write | {self.SONG_COUNT_ADDRESS: 20} | (self.set_unlocked_props(list(PROPS.keys()))) | (self.set_unlocked_outfits(list(OUTFITS.keys()))) #Unlocks EVERYTHING - means you won't get popups at the end! (hopefully?)
                 await self.write_memory(memory_to_write)
                 self.outfit_inventory_matches_archi_items = False #When you open the outfits again, it'll match them to your received outfits
 
