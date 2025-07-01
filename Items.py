@@ -30,8 +30,7 @@ item_table: Dict[str, KONItemData] = {
 	"Cassette Tape": KONItemData("Token", 701, ItemClassification.progression),
 
 	#Upgrades
-	"Snack Upgrade": KONItemData("Upgrade", 800, ItemClassification.useful),
-	"High Tension Upgrade": KONItemData("Upgrade", 801, ItemClassification.useful),
+	"Snack Upgrade": KONItemData("Upgrade", 800, ItemClassification.useful)
 }
 
 for song in SONGS:
