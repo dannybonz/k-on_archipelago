@@ -436,7 +436,7 @@ class KONInterface:
 
     def unlock_song(self, song_title) -> None:
         self.songs_received.append(song_title)
-        self.hard_songs_received.append(song_title + " (Hard)")
+        self.hard_songs_received.append(f"{song_title} (Hard)")
 
     def unlock_prop(self, prop) -> None:
         self.props_received.append(prop)
@@ -465,8 +465,8 @@ class KONInterface:
     def set_unlocked_hard_songs(self, unlocked_hard_songs):
         if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
             if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
-                if not self.goal_song in unlocked_hard_songs:
-                    unlocked_hard_songs.append(self.goal_song) #Goal song unlocked on Hard!
+                if not f"{self.goal_song} (Hard)" in unlocked_hard_songs:
+                    unlocked_hard_songs.append(f"{self.goal_song} (Hard)") #Goal song unlocked on Hard!
 
         hard_song_unlock_data = {}
         for song in HARD_SONGS:
