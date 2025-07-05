@@ -21,7 +21,7 @@ class KONCommandProcessor(ClientCommandProcessor):
             log_tokens(self.ctx)
 
 class KONContext(CommonContext):
-    client_version: str = "v1.0.1"
+    client_version: str = "v1.0.2"
 
     game: str = "K-On! After School Live!!"
 
