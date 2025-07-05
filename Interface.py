@@ -463,6 +463,11 @@ class KONInterface:
         return song_unlock_data
 
     def set_unlocked_hard_songs(self, unlocked_hard_songs):
+        if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
+            if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
+                if not self.goal_song in unlocked_hard_songs:
+                    unlocked_hard_songs.append(self.goal_song) #Goal song unlocked on Hard!
+
         hard_song_unlock_data = {}
         for song in HARD_SONGS:
             address = HARD_SONGS[song]["address"]
