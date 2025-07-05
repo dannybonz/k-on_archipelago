@@ -74,8 +74,6 @@ class KONInterface:
         self.hard_rank_clears: list[str] = []
         self.hard_character_rank_clears: list[str] = []
         self.event_clears: list[str] = []
-        self.completionist_clears: list[str] = []
-        self.hard_completionist_clears: list[str] = []
         self.characters_received: list[str] = []
         self.outfits_received: list[str] = []
         self.active_outfits = {"Yui": None, "Mio": None, "Ritsu": None, "Mugi": None, "Azusa": None}
@@ -351,21 +349,6 @@ class KONInterface:
                 if value == 1:
                     self.hard_rank_clears.append(f"{self.current_song}: A Rank on Hard")
                     self.hard_character_rank_clears.append(f"{self.current_song}: A Rank with {self.current_character} on Hard")
-
-            completionist_check = True
-            for character in CHARACTERS:
-                if value == 0:
-                    if not (f"{self.current_song}: Clear with {character}") in self.character_clears:
-                        completionist_check = False
-                else:
-                    if not (f"{self.current_song}: Clear with {character} on Hard") in self.character_clears:
-                        completionist_check = False
-            
-            if completionist_check:
-                if value == 0:
-                    self.completionist_clears.append(f"{self.current_song}: Full Band Clear")
-                else:
-                    self.hard_completionist_clears.append(f"{self.current_song}: Full Band Clear on Hard")
 
             await self.resume_emulation()
 

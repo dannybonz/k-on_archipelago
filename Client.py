@@ -6,7 +6,7 @@ from NetUtils import ClientStatus
 import Utils
 
 from .Interface import KONInterface
-from .Data import EVENTS, SONGS, SNACKS, SNACK_NAME_FROM_ID, SONG_NAME_FROM_ID, PROP_NAME_FROM_ID, SONG_CLEARS, CHARACTER_CLEARS, PLAYABLE_CHARACTER_NAME_FROM_ID, PROPS, SONG_COMPLETIONIST_CLEARS, CHARACTER_CLEAR_NAME_FROM_ID, OUTFIT_NAME_FROM_ID, SONG_RANK_CLEARS, SONG_COMBO_CLEARS, CHARACTER_RANK_CLEARS, CHARACTER_COMBO_CLEARS, HARD_SONG_RANK_CLEARS, HARD_SONG_COMBO_CLEARS, HARD_CHARACTER_RANK_CLEARS, HARD_CHARACTER_COMBO_CLEARS, HARD_SONG_COMPLETIONIST_CLEARS, HARD_SONG_CLEARS, HARD_CHARACTER_CLEARS
+from .Data import EVENTS, SONGS, SNACKS, SNACK_NAME_FROM_ID, SONG_NAME_FROM_ID, PROP_NAME_FROM_ID, SONG_CLEARS, CHARACTER_CLEARS, PLAYABLE_CHARACTER_NAME_FROM_ID, PROPS, SONG_COMPLETIONIST_CLEARS, CHARACTER_CLEAR_NAME_FROM_ID, OUTFIT_NAME_FROM_ID, SONG_RANK_CLEARS, SONG_COMBO_CLEARS, CHARACTER_RANK_CLEARS, CHARACTER_COMBO_CLEARS, HARD_SONG_RANK_CLEARS, HARD_SONG_COMBO_CLEARS, HARD_CHARACTER_RANK_CLEARS, HARD_CHARACTER_COMBO_CLEARS, HARD_SONG_COMPLETIONIST_CLEARS, HARD_SONG_CLEARS, HARD_CHARACTER_CLEARS, HARD_CHARACTER_CLEAR_NAME_FROM_ID, CHARACTERS
 
 class KONCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext) -> None:
@@ -55,9 +55,6 @@ class KONContext(CommonContext):
             self.interface.token_requirement = self.slot_data["token_requirement"]
             self.interface.tape_requirement = self.slot_data["tape_requirement"]
             self.interface.matching_outfits_goal = self.slot_data["matching_outfits_goal"]
-            for loc in self.previously_checked_locations:
-                if loc in CHARACTER_CLEAR_NAME_FROM_ID:
-                    self.interface.character_clears.append(CHARACTER_CLEAR_NAME_FROM_ID[loc]) #Required to maintain progress for Full Band Clear across play sessions
 
     async def server_auth(self, password_requested : bool = False) -> None:
         if password_requested and not self.password:
@@ -137,8 +134,6 @@ async def check_game(ctx) -> None:
             checked_locations.add(SONG_CLEARS[song_clear]["location_id"])
         for character_clear in ctx.interface.character_clears:
             checked_locations.add(CHARACTER_CLEARS[character_clear]["location_id"])
-        for completionist_clear in ctx.interface.completionist_clears:
-            checked_locations.add(SONG_COMPLETIONIST_CLEARS[completionist_clear]["location_id"])
 
         #Check for combo clears
         for combo_clear in ctx.interface.combo_clears:
@@ -157,8 +152,6 @@ async def check_game(ctx) -> None:
             checked_locations.add(HARD_SONG_CLEARS[hard_song_clear]["location_id"])
         for hard_character_clear in ctx.interface.hard_character_clears:
             checked_locations.add(HARD_CHARACTER_CLEARS[hard_character_clear]["location_id"])
-        for hard_completionist_clear in ctx.interface.hard_completionist_clears:
-            checked_locations.add(HARD_SONG_COMPLETIONIST_CLEARS[hard_completionist_clear]["location_id"])
 
         #Check for combo clears on Hard difficulty
         for hard_combo_clear in ctx.interface.hard_combo_clears:
@@ -171,6 +164,26 @@ async def check_game(ctx) -> None:
             checked_locations.add(HARD_SONG_RANK_CLEARS[hard_rank_clear]["location_id"])
         for hard_character_rank_clear in ctx.interface.hard_character_rank_clears:
             checked_locations.add(HARD_CHARACTER_RANK_CLEARS[hard_character_rank_clear]["location_id"])
+
+        #Full Band Clear
+        for song in SONGS:
+            if SONG_CLEARS[f"{song}: Clear"]["location_id"] in ctx.checked_locations and not SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear"]["location_id"] in ctx.checked_locations:
+                full_band_cleared = True
+                for character in CHARACTERS:
+                    if full_band_cleared and not CHARACTER_CLEARS[f"{song}: Clear with {character}"]["location_id"] in ctx.checked_locations:
+                        full_band_cleared = False
+
+                if full_band_cleared:
+                    checked_locations.add(SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear"]["location_id"])
+            
+            if ctx.slot_data["hard_clear_locations"] > 1 and HARD_SONG_CLEARS[f"{song}: Clear on Hard"]["location_id"] in ctx.checked_locations and not HARD_SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear on Hard"]["location_id"] in ctx.checked_locations:
+                full_band_cleared = True
+                for character in CHARACTERS:
+                    if full_band_cleared and not HARD_CHARACTER_CLEARS[f"{song}: Clear with {character} on Hard"]["location_id"] in ctx.checked_locations:
+                        full_band_cleared = False
+
+                if full_band_cleared:
+                    checked_locations.add(HARD_SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear on Hard"]["location_id"])
 
         checked_locations = checked_locations.difference(ctx.checked_locations)
 
@@ -263,7 +276,7 @@ def log_characters(ctx) -> None:
     if len(chars) == 1:
         name_str = f"{chars[0]}."
     else:
-        name_str = ", ".join(chars[:-1]) + f", and {chars[-1]}."
+        name_str = ", ".join(chars[:-1]) + f" and {chars[-1]}."
     logger.info(f"You can now play as {name_str}")
 
 def log_tokens(ctx) -> None:

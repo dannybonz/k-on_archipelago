@@ -346,6 +346,10 @@ CHARACTER_CLEAR_NAME_FROM_ID = {}
 for clear_name in CHARACTER_CLEARS:
     CHARACTER_CLEAR_NAME_FROM_ID[CHARACTER_CLEARS[clear_name]["location_id"]] = clear_name
 
+HARD_CHARACTER_CLEAR_NAME_FROM_ID = {}
+for clear_name in HARD_CHARACTER_CLEARS:
+    HARD_CHARACTER_CLEAR_NAME_FROM_ID[HARD_CHARACTER_CLEARS[clear_name]["location_id"]] = clear_name
+
 OUTFIT_MAPPING = {0: "Winter Uniform Outfit",
         1: "Summer Uniform Outfit",
         2: "Jersey Outfit",
