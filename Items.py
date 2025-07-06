@@ -26,7 +26,7 @@ item_table: Dict[str, KONItemData] = {
 	"Happy End": KONItemData("Victory", 301, ItemClassification.progression),
 
 	#Progression
-	"Teatime Token": KONItemData("Token", 700, ItemClassification.progression),
+	"Teatime Token": KONItemData("Token", 700, ItemClassification.progression_skip_balancing),
 	"Cassette Tape": KONItemData("Token", 701, ItemClassification.progression),
 
 	#Upgrades
