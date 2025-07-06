@@ -182,6 +182,13 @@ class KONWorld(World):
             elif data.category in ["Outfits", "Accessories"] and not name in self.starting_outfits:
                 junk_pool.append(name)
 
+        #Progression snacks if Event locations are enabled
+        if self.options.event_locations.value:
+            item_table["Sweets"] = KONItemData("Snacks", SNACKS["Sweets"]["item_id"], ItemClassification.progression)
+            item_table["Taiyaki"] = KONItemData("Snacks", SNACKS["Taiyaki"]["item_id"], ItemClassification.progression)
+            item_pool.append(self.create_item("Sweets"))
+            item_pool.append(self.create_item("Taiyaki"))
+
         #Approximately a third of the junk pool is snacks 
         number_of_snacks = (total_locations - len(item_pool)) / 3
         amount_per_snack = int(number_of_snacks / len(SNACKS))

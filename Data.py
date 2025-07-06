@@ -177,7 +177,7 @@ PROPS = {"Tea Set": {"item_id": 401, "address": 0x90b0b6c, "bit": 0},
     "Ui's Phone Number": {"address": 0x90b0b78, "bit": 4}
 }
 
-PROGRESSION_PROPS = ["Mio's Bass", "Yui's Guitar", 'Textbook', 'Barnacles', 'Lottery Ticket', 'Radio Cassette Player', 'Castanets', 'Cat Ears', "Ritsu's Drums", 'Photo of the Villa', 'Snowman', 'Shellfish', "Azusa's Guitar", 'Sad Novel', 'Ticket', 'Note', 'Mio Fan Club Poster', 'Tuner', 'Tea Set', 'Documents', 'Purse', 'Parasol', 'Secret Photo', 'Board Game', 'Horror Novel', 'Microphone', 'Picnic Sheet', 'Amp', 'Lyrics Card', 'Kitty Teacup', 'Key'] #All the props that are used to trigger events
+PROGRESSION_PROPS = ["Sweets", "Taiyaki", "Mio's Bass", "Yui's Guitar", 'Textbook', 'Barnacles', 'Lottery Ticket', 'Radio Cassette Player', 'Castanets', 'Cat Ears', "Ritsu's Drums", 'Photo of the Villa', 'Snowman', 'Shellfish', "Azusa's Guitar", 'Sad Novel', 'Ticket', 'Note', 'Mio Fan Club Poster', 'Tuner', 'Tea Set', 'Documents', 'Purse', 'Parasol', 'Secret Photo', 'Board Game', 'Horror Novel', 'Microphone', 'Picnic Sheet', 'Amp', 'Lyrics Card', 'Kitty Teacup', 'Key'] #All the props that are used to trigger events
 
 PROP_NAME_FROM_ID = {}
 PROP_FLAGS_FROM_ADDRESS = {}
@@ -234,7 +234,7 @@ EVENTS = {"Event: Play Tutorial": {'location_id': 4001, 'address': 0x90b0b8c, 'b
         "Event: Sing Tutorial": {'location_id': 4007, 'address': 0x90b0b8c, 'bit': 6, 'requirements': ['Head Over Heels for Giita', 'Curry, Then Rice'], 'ingame_id': 6},
         "Event: A Sense of Accomplishment!": {'location_id': 4008, 'address': 0x90b0b8c, 'bit': 7, 'requirements': ['Fuwa Fuwa Time'], 'ingame_id': 7},
 
-        "Event: First Live!": {'location_id': 4009, 'address': 0x90b0b8d, 'bit': 0, 'requirements': list(SONGS.keys()), 'ingame_id': 8},
+        "Event: First Live!": {'location_id': 4009, 'address': 0x90b0b8d, 'bit': 0, 'requirements': ["Don't Say Lazy"], 'ingame_id': 8},
 #       "Event: I Love K-On!": {'location_id': 4010, 'address': 0x90b0b8d, 'bit': 1, 'requirements': [], 'ingame_id': 9}, 
 #       "Event: Credits!": {'location_id': 4011, 'address': 0x90b0b8d, 'bit': 2, 'requirements': [], 'ingame_id': 10},
         "Event: Haggling!": {'location_id': 4012, 'address': 0x90b0b8d, 'bit': 3, 'requirements': ['Lottery Ticket', 'Purse'], 'ingame_id': 11},
