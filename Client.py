@@ -56,6 +56,9 @@ class KONContext(CommonContext):
             self.interface.tape_requirement = self.slot_data["tape_requirement"]
             self.interface.matching_outfits_goal = self.slot_data["matching_outfits_goal"]
 
+            if "snack_upgrades_enabled" in self.slot_data and self.slot_data["snack_upgrades_enabled"] == True:
+                self.interface.snack_upgrades_enabled = True
+
     async def server_auth(self, password_requested : bool = False) -> None:
         if password_requested and not self.password:
             await super().server_auth(password_requested)

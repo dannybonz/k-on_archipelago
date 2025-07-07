@@ -113,12 +113,14 @@ class KONWorld(World):
     
     def fill_slot_data(self) -> dict:
         if self.options.snack_upgrades.value > 0:
+            snack_upgrades_enabled = True
             allowed_starting_duration = 30 - (self.options.snack_upgrades.value * 1)
             default_food_duration = max(min(15, allowed_starting_duration), 4)
         else:
+            snack_upgrades_enabled = False
             default_food_duration = 15
 
-        slot_data_dict = {"full_band_goal": self.options.full_band_goal.value, "matching_outfits_goal": self.options.matching_outfits_goal.value, "challenge_locations": self.options.challenge_locations.value, "hard_challenge_locations": self.options.hard_challenge_locations.value, "hard_clear_locations": self.options.hard_clear_locations.value, "event_locations": self.options.event_locations.value, "goal_song": self.goal_song, "token_requirement": self.token_requirement, "tape_requirement": self.options.tape_requirement.value, "default_food_duration": default_food_duration, "snack_cache": {}}
+        slot_data_dict = {"full_band_goal": self.options.full_band_goal.value, "matching_outfits_goal": self.options.matching_outfits_goal.value, "challenge_locations": self.options.challenge_locations.value, "hard_challenge_locations": self.options.hard_challenge_locations.value, "hard_clear_locations": self.options.hard_clear_locations.value, "event_locations": self.options.event_locations.value, "goal_song": self.goal_song, "token_requirement": self.token_requirement, "tape_requirement": self.options.tape_requirement.value, "default_food_duration": default_food_duration, "snack_cache": {}, "snack_upgrades_enabled": snack_upgrades_enabled}
         return slot_data_dict
 
     def create_items(self) -> None:

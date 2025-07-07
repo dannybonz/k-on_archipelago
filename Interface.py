@@ -25,6 +25,7 @@ class KONInterface:
     ITEM_ACTIVE_ADDRESS = 0x90aee58 #Whether an item is being used or not
     ITEM_START_ADDRESS = 0x90aee60 #The measure where the item effect begins
     ITEM_END_ADDRESS = 0x90aee64 #The measure where the item effect ends
+    CURRENT_ITEM_ADDRESS = 0x90aee54 #Which item is being used
 
     #Results
     SONG_OUTCOME_ADDRESS = 0x90aee74
@@ -97,6 +98,8 @@ class KONInterface:
         self.tape_requirement: int = 999
         self.matching_outfits_goal = True
         self.loaded_kon = False
+        self.current_item = 0
+        self.snack_upgrades_enabled = False
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
         try:
@@ -302,7 +305,17 @@ class KONInterface:
         if len(self.memory_request_log) > 0:
             last_request = self.memory_request_log.pop(0)
         address = last_request
-        value = struct.unpack("<I", raw_bytes)[0]  #Convert bytes to int
+        
+        length = len(raw_bytes)
+
+        if length == 1:
+            value = struct.unpack("<B", raw_bytes)[0]  # unsigned char
+        elif length == 2:
+            value = struct.unpack("<H", raw_bytes)[0]  # unsigned short
+        elif length == 4:
+            value = struct.unpack("<I", raw_bytes)[0]  # unsigned int
+        else:
+            raise ValueError("Unsupported memory read size")        
 
         if address == self.CHARACTER_ADDRESS:
             if (self.song_screen == "Results"):
@@ -317,7 +330,11 @@ class KONInterface:
                     self.logger.info("You don't have this character unlocked! Use /characters to see your current unlocked characters.")
                     await self.write_memory({self.CURSOR_ADDRESS: 4000}) #Move cursor past all the notes, triggering Game Over
                 else:
-                    await self.write_memory(self.set_unlocked_hard_songs(list(HARD_SONGS.keys()))) #Sets all Hard songs to unlocked, preventing popups at the end of the song
+                    await self.request_memory(self.CURRENT_ITEM_ADDRESS)
+
+        elif address == self.CURRENT_ITEM_ADDRESS:
+            self.current_item = value #Store the current used item
+            await self.write_memory(self.set_unlocked_hard_songs(list(HARD_SONGS.keys()))) #Sets all Hard songs to unlocked, preventing popups at the end of the song
 
         elif address == self.CURRENT_EVENT_ADDRESS:
             if not EVENT_TITLES_FROM_INGAME_ID[value] in self.event_clears:
@@ -325,7 +342,8 @@ class KONInterface:
             if EVENT_TITLES_FROM_INGAME_ID[value] == "Event: Item Tutorial":
                 self.receive_snack("Cake", 1) #Adds a Cake - you need to it to complete the tutorial
                 await self.update_snacks()
-            await self.resume_emulation()
+            else:
+                await self.resume_emulation()
 
         elif address == self.DIFFICULTY_ADDRESS:
             self.song_clears.append(f"{self.current_song}: Clear")
@@ -384,14 +402,17 @@ class KONInterface:
 
             if len(self.snacks_to_add) > 0:
                 next_snack = list(self.snacks_to_add.keys())[0]
-                await self.request_memory(SNACKS[next_snack]["address"])
+                await self.request_memory(SNACKS[next_snack]["address"], size=1)
             else:
                 await self.write_memory(self.snack_write)
                 self.snack_write = {}
 
         elif address == self.ITEM_START_ADDRESS:
-            new_end = value + self.food_duration
-            await self.write_memory({self.ITEM_END_ADDRESS: new_end})
+            if self.snack_upgrades_enabled and not (self.current_item == 9): #Only adjust item duration if upgrades are enabled (don't apply to #9 Secret Score)
+                new_end = value + self.food_duration
+                await self.write_memory({self.ITEM_END_ADDRESS: new_end})
+            else:
+                await self.resume_emulation()
 
         elif address in self.CHAR_FROM_OUTFIT_ADDRESS:
             character = self.CHAR_FROM_OUTFIT_ADDRESS[address]
@@ -519,6 +540,12 @@ class KONInterface:
             self.snacks_to_add[snack_name] = snack_count
 
     async def update_snacks(self) -> None:
+        for snack_name in list(self.snacks_to_add.keys()):
+            if self.snacks_to_add[snack_name] == 0:
+                del self.snacks_to_add[snack_name]
+
         if len(self.snacks_to_add) > 0:
             snack_name = list(self.snacks_to_add.keys())[0]
-            await self.request_memory(SNACKS[snack_name]["address"])
+            await self.request_memory(SNACKS[snack_name]["address"], size=1)
+        else:
+            await self.resume_emulation()
