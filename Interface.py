@@ -22,6 +22,7 @@ class KONInterface:
     CURSOR_ADDRESS = 0x90aee38 #Cursor position
     SCORE_ADDRESS = 0x90aee40
     HEALTH_ADDRESS = 0x90aee4c
+    GAMEOVER_ADDRESS = 0x090aee4b
     ITEM_ACTIVE_ADDRESS = 0x90aee58 #Whether an item is being used or not
     ITEM_START_ADDRESS = 0x90aee60 #The measure where the item effect begins
     ITEM_END_ADDRESS = 0x90aee64 #The measure where the item effect ends
@@ -328,7 +329,7 @@ class KONInterface:
                 self.current_character = self.CHARACTER_MAPPING[value]
                 if not (f"Playable {self.current_character}" in self.characters_received):
                     self.logger.info("You don't have this character unlocked! Use /characters to see your current unlocked characters.")
-                    await self.write_memory({self.CURSOR_ADDRESS: 4000}) #Move cursor past all the notes, triggering Game Over
+                    await self.write_memory({self.GAMEOVER_ADDRESS: 255})
                 else:
                     await self.request_memory(self.CURRENT_ITEM_ADDRESS)
 
