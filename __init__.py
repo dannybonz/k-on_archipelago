@@ -72,11 +72,13 @@ class KONWorld(World):
         if self.token_count == 0 and self.tape_requirement == 0:
             self.tape_requirement = 18
 
-        forced_item_count = len(self.possible_songs) + len(self.possible_characters) + self.options.snack_upgrades
+        forced_item_count = len(self.possible_songs) + len(self.possible_characters) + self.options.snack_upgrades.value
         if self.options.event_locations.value:
             forced_item_count += len(PROGRESSION_PROPS)
         if self.options.matching_outfits_goal.value:
             forced_item_count += 5
+        if self.options.shuffle_hard_difficulty.value:
+            forced_item_count += 1
 
         location_count = (len(SONG_COMPLETIONIST_CLEARS) - 1) + (len(CHARACTER_CLEARS) - 5)
         if self.tape_requirement == 0:
@@ -165,6 +167,11 @@ class KONWorld(World):
 
         for x in range(0, self.token_count):
             item_pool.append(self.create_item("Teatime Token"))
+
+        if self.options.shuffle_hard_difficulty.value:
+            item_pool.append(self.create_item("Hard Difficulty"))
+        else:
+            self.multiworld.push_precollected(self.create_item("Hard Difficulty"))
 
         for name, data in item_table.items():
             if (data.category == "Characters" and name in self.possible_characters) or (data.category == "Songs" and name in self.possible_songs) or (data.category == "Outfits" and self.options.matching_outfits_goal.value and guaranteed_outfit_type in name):

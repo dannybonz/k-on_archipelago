@@ -50,33 +50,33 @@ def set_song_rules(song, world):
                 multiworld.get_location(f"{song}: {combo} Combo with Azusa", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player)
 
         if world.options.hard_clear_locations.value > 0:
-            multiworld.get_location(f"{song}: Clear on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song)
+            multiworld.get_location(f"{song}: Clear on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Hard Difficulty", player)
 
             if world.options.hard_clear_locations.value > 1:
-                multiworld.get_location(f"{song}: Clear with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player)
-                multiworld.get_location(f"{song}: Clear with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player)
-                multiworld.get_location(f"{song}: Clear with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player)
-                multiworld.get_location(f"{song}: Clear with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player)
-                multiworld.get_location(f"{song}: Clear with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player)
-                multiworld.get_location(f"{song}: Full Band Clear on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player) and state.has("Playable Mio", player) and state.has("Playable Ritsu", player) and state.has("Playable Mugi", player) and state.has("Playable Azusa", player)
+                multiworld.get_location(f"{song}: Clear with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: Clear with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: Clear with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: Clear with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: Clear with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: Full Band Clear on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player) and state.has("Playable Mio", player) and state.has("Playable Ritsu", player) and state.has("Playable Mugi", player) and state.has("Playable Azusa", player) and state.has("Hard Difficulty", player)
 
         if world.options.hard_challenge_locations.value > 0:
             combo = SONGS[song]["combo"]
-            multiworld.get_location(f"{song}: A Rank on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song)
-            multiworld.get_location(f"{song}: {combo} Combo on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song)
+            multiworld.get_location(f"{song}: A Rank on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Hard Difficulty", player)
+            multiworld.get_location(f"{song}: {combo} Combo on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Hard Difficulty", player)
 
             if world.options.hard_challenge_locations.value > 1:
-                multiworld.get_location(f"{song}: A Rank with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player)
-                multiworld.get_location(f"{song}: A Rank with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player)
-                multiworld.get_location(f"{song}: A Rank with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player)
-                multiworld.get_location(f"{song}: A Rank with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player)
-                multiworld.get_location(f"{song}: A Rank with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player)
+                multiworld.get_location(f"{song}: A Rank with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: A Rank with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: A Rank with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: A Rank with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: A Rank with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player) and state.has("Hard Difficulty", player)
 
-                multiworld.get_location(f"{song}: {combo} Combo with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player)
-                multiworld.get_location(f"{song}: {combo} Combo with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player)
-                multiworld.get_location(f"{song}: {combo} Combo with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player)
-                multiworld.get_location(f"{song}: {combo} Combo with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player)
-                multiworld.get_location(f"{song}: {combo} Combo with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player)
+                multiworld.get_location(f"{song}: {combo} Combo with Yui on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Yui", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: {combo} Combo with Mio on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mio", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: {combo} Combo with Ritsu on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Ritsu", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: {combo} Combo with Mugi on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Mugi", player) and state.has("Hard Difficulty", player)
+                multiworld.get_location(f"{song}: {combo} Combo with Azusa on Hard", player).access_rule = lambda state: song_unlock_rule(state, world, player, song) and state.has("Playable Azusa", player) and state.has("Hard Difficulty", player)
 
 def set_rules(world: World) -> None:
 

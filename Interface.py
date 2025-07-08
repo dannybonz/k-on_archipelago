@@ -103,6 +103,7 @@ class KONInterface:
         self.snack_upgrades_enabled = False
         self.deathlink_blocked = False
         self.deaths = 0
+        self.hard_unlocked = False
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
         try:
@@ -486,16 +487,16 @@ class KONInterface:
         self.outfits_received.append(outfit)
 
     def set_unlocked_songs(self, unlocked_songs):
-        if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
-            if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
-                if not self.goal_song in unlocked_songs:
-                    unlocked_songs.append(self.goal_song) #Goal song unlocked!
-
         song_unlock_data = {}
         for song in SONGS:
             address = SONGS[song]["address"]
             if address not in song_unlock_data:
                 song_unlock_data[address] = 0  #Start with all bits cleared
+
+        if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
+            if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
+                if not self.goal_song in unlocked_songs:
+                    unlocked_songs.append(self.goal_song) #Goal song unlocked!
 
         for song in unlocked_songs:
             song_unlock_data[SONGS[song]["address"]] |= (1 << SONGS[song]["bit"])  #Set the bit for the song
@@ -503,19 +504,20 @@ class KONInterface:
         return song_unlock_data
 
     def set_unlocked_hard_songs(self, unlocked_hard_songs):
-        if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
-            if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
-                if not f"{self.goal_song} (Hard)" in unlocked_hard_songs:
-                    unlocked_hard_songs.append(f"{self.goal_song} (Hard)") #Goal song unlocked on Hard!
-
         hard_song_unlock_data = {}
         for song in HARD_SONGS:
             address = HARD_SONGS[song]["address"]
             if address not in hard_song_unlock_data:
                 hard_song_unlock_data[address] = 0  #Start with all bits cleared
 
-        for song in unlocked_hard_songs:
-            hard_song_unlock_data[HARD_SONGS[song]["address"]] |= (1 << HARD_SONGS[song]["bit"])  #Set the bit for the song
+        if self.hard_unlocked: #Only unlock Hard songs if Hard difficulty item has been obtained
+            if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
+                if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
+                    if not f"{self.goal_song} (Hard)" in unlocked_hard_songs:
+                        unlocked_hard_songs.append(f"{self.goal_song} (Hard)") #Goal song unlocked on Hard!
+
+            for song in unlocked_hard_songs:
+                hard_song_unlock_data[HARD_SONGS[song]["address"]] |= (1 << HARD_SONGS[song]["bit"])  #Set the bit for the song
 
         return hard_song_unlock_data        
 

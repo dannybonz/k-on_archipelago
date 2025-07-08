@@ -76,6 +76,12 @@ class HardChallengeLocations(Choice):
     option_character_and_song = 2
     default = 0
 
+class ShuffleHardDifficulty(Toggle):
+    """
+    Adds a Hard Difficulty item that must be obtained before songs can be played on Hard difficulty mode.
+    """
+    display_name = "Shuffle Hard Difficulty"
+
 class EventLocations(Toggle):
     """
     Include additional locations for triggering story events. 
@@ -122,6 +128,7 @@ class KONOptions(PerGameCommonOptions):
     challenge_locations: ChallengeLocations
     hard_clear_locations: HardClearLocations
     hard_challenge_locations: HardChallengeLocations
+    shuffle_hard_difficulty: ShuffleHardDifficulty
     event_locations: EventLocations
     starting_songs_amount: StartingSongsAmount
     starting_characters_amount: StartingCharactersAmount

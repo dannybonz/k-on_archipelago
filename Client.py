@@ -249,8 +249,8 @@ async def check_game(ctx) -> None:
                     collected_tapes += 1
                 elif server_item.item == 800: #Snack Upgrade item
                     food_upgrades += 1
-                elif server_item.item == 801: #Tension Upgrade item (currently unused)
-                    tension_upgrades += 1
+                elif server_item.item == 302: #Hard Difficulty
+                    ctx.interface.hard_unlocked = True
                 else: #Unknown item received
                     ctx.cached_received_items.add(server_item.item)
 

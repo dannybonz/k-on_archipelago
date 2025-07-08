@@ -22,8 +22,9 @@ def get_items_by_category(category: str) -> Dict[str, KONItemData]:
 	return item_dict
 
 item_table: Dict[str, KONItemData] = {
-	#Victory
+	#Misc
 	"Happy End": KONItemData("Victory", 301, ItemClassification.progression),
+	"Hard Difficulty": KONItemData("Upgrade", 302, ItemClassification.progression),
 
 	#Progression
 	"Teatime Token": KONItemData("Token", 700, ItemClassification.progression_skip_balancing),
