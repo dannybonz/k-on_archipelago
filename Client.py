@@ -45,6 +45,7 @@ class KONContext(CommonContext):
         self.welcomed_player = False
         self.cached_received_items = set()
         self.slot_data: Dict[str, Any] = {}
+        self.sent_deaths = 0
 
     def on_package(self, cmd: str, args: Dict[str, Any]) -> None:
         if cmd == "Connected":
@@ -54,7 +55,8 @@ class KONContext(CommonContext):
             self.interface.goal_song = self.slot_data["goal_song"]
             self.interface.token_requirement = self.slot_data["token_requirement"]
             self.interface.tape_requirement = self.slot_data["tape_requirement"]
-            self.interface.matching_outfits_goal = self.slot_data["matching_outfits_goal"]
+            self.interface.matching_outfits_goal = self.slot_data["matching_outfits_goal"]       
+            self.deathlink_pending = False
 
             if "snack_upgrades_enabled" in self.slot_data and self.slot_data["snack_upgrades_enabled"] == True:
                 self.interface.snack_upgrades_enabled = True
@@ -65,6 +67,15 @@ class KONContext(CommonContext):
 
         await self.get_username()
         await self.send_connect()
+
+    def on_deathlink(self, data: dict):
+        if "deathlink_enabled" in self.slot_data and self.slot_data["deathlink_enabled"] == True:
+            self.deathlink_pending = True
+            text = data.get("cause", "")
+            if text:
+                logger.info(f"DeathLink: {text}")
+            else:
+                logger.info(f"DeathLink: Received from {data['source']}")
 
     def run_gui(self) -> None:
         from kvui import GameManager
@@ -97,11 +108,12 @@ async def interface_sync_task(ctx) -> None:
             is_connected = await ctx.interface.get_connection_state()
             update_connection_status(ctx, is_connected)
             if is_connected:
-                await asyncio.sleep(3)
+                await asyncio.sleep(1)
                 if ctx.interface.loaded_kon:
                     await check_game(ctx)
                 else:
                     logger.info("K-On! After School Live!! is not currently running. Please load the game in PPSSPP.")
+                    await asyncio.sleep(3)
                     await ctx.interface.get_loaded_game_status()
             else:
                 await reconnect_game(ctx)
@@ -125,6 +137,10 @@ async def check_game(ctx) -> None:
             logger.info("You are now connected and ready to play. Let's rock!")
             logger.info("Use /progress to see your progress towards unlocking your Goal Song. Use /characters to see your currently unlocked characters.")
             ctx.welcomed_player = True
+
+            #Enable deathlink once connected
+            if "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True:
+                await ctx.update_death_link(True)
 
         checked_locations : Set[int] = set()
 
@@ -262,6 +278,14 @@ async def check_game(ctx) -> None:
 
         if new_characters: #If a new character has been unlocked
             log_characters(ctx) #Let the player know their current list of characters
+
+        if ctx.deathlink_pending == True:
+            await ctx.interface.deathlink_received()
+            ctx.deathlink_pending = False
+        elif "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True and ctx.interface.deaths > ctx.sent_deaths:
+            ctx.sent_deaths = ctx.interface.deaths
+            await ctx.send_death()
+        
     else:
         message = "You are not currently connected to an Archipelago server. Connect to an Archipelago server now!"
         logger.info(message)

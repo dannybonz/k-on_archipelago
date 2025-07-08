@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, Range, Toggle, PerGameCommonOptions
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink
 
 class TapeRequirement(Range):
     """
@@ -126,3 +126,4 @@ class KONOptions(PerGameCommonOptions):
     starting_songs_amount: StartingSongsAmount
     starting_characters_amount: StartingCharactersAmount
     snack_upgrades: SnackUpgrades
+    death_link: DeathLink

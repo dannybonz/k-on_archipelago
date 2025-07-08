@@ -22,7 +22,6 @@ class KONInterface:
     CURSOR_ADDRESS = 0x90aee38 #Cursor position
     SCORE_ADDRESS = 0x90aee40
     HEALTH_ADDRESS = 0x90aee4c
-    GAMEOVER_ADDRESS = 0x090aee4b
     ITEM_ACTIVE_ADDRESS = 0x90aee58 #Whether an item is being used or not
     ITEM_START_ADDRESS = 0x90aee60 #The measure where the item effect begins
     ITEM_END_ADDRESS = 0x90aee64 #The measure where the item effect ends
@@ -47,6 +46,7 @@ class KONInterface:
     GAMEPLAY_START_FUNC_ADDRESS = 0x882dca0 #Triggers when gameplay begins
     RESULTS_FUNC_ADDRESS = 0x88e0330 #Triggers when results screen opens
     ACTIVATE_ITEM_FUNC_ADDRESS = 0x0882ec64 #Triggers when a snack has been activated
+    GAMEOVER_FUNC_ADDRESS = 0x882cfe0 #Triggers upon death
 
     #Unlockables
     LOAD_SONG_LIST_FUNC_ADDRESS = 0x886d5a4 #Triggers when selecting the song list
@@ -101,6 +101,8 @@ class KONInterface:
         self.loaded_kon = False
         self.current_item = 0
         self.snack_upgrades_enabled = False
+        self.deathlink_blocked = False
+        self.deaths = 0
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
         try:
@@ -142,6 +144,7 @@ class KONInterface:
         await self.set_cpu_breakpoint(self.START_EVENT_FUNC_ADDRESS) #Used when triggering an event
 #            await self.set_cpu_breakpoint(self.GAMEPLAY_START_FUNC_ADDRESS) #Function called when song gameplay starts - currently unused, could work with future Tension Upgrade item
         await self.set_cpu_breakpoint(self.ACTIVATE_ITEM_FUNC_ADDRESS) #Function called when using an item - allows us to apply the duration upgrade
+        await self.set_cpu_breakpoint(self.GAMEOVER_FUNC_ADDRESS) #Function called upon death - used for deathlink
 
     async def get_loaded_game_status(self):
         request = {"event": "game.status"} #Check for game
@@ -229,8 +232,22 @@ class KONInterface:
             await self.request_memory(self.CHARACTER_ADDRESS)
         elif pc_address == self.ACTIVATE_ITEM_FUNC_ADDRESS:
             await self.request_memory(self.ITEM_START_ADDRESS)
+        elif pc_address == self.GAMEOVER_FUNC_ADDRESS:
+            if not self.deathlink_blocked:
+                self.deaths += 1
+            else:
+                self.deathlink_blocked = False
+            await self.resume_emulation()
         else: #No criteria to actually do anything has been met from this breakpoint, so let's just continue
             await self.resume_emulation()
+
+    async def deathlink_received(self):
+        if self.song_screen == "Starting Song":
+            self.deathlink_blocked = True
+            await self.trigger_gameover()
+
+    async def trigger_gameover(self):
+        await self.write_memory({0x090AEE48: 0, 0x090AEE49: 15, 0x090AEE4A: 255, 0x090AEE4B: 255}, size=1)
 
     async def request_memory(self, address, size: int = 4) -> None:
         request = {"event": "memory.read", "address": address, "size": size}
@@ -328,8 +345,9 @@ class KONInterface:
             elif (self.song_screen == "Starting Song"):
                 self.current_character = self.CHARACTER_MAPPING[value]
                 if not (f"Playable {self.current_character}" in self.characters_received):
+                    self.deathlink_blocked = True
                     self.logger.info("You don't have this character unlocked! Use /characters to see your current unlocked characters.")
-                    await self.write_memory({self.GAMEOVER_ADDRESS: 255})
+                    await self.trigger_gameover()
                 else:
                     await self.request_memory(self.CURRENT_ITEM_ADDRESS)
 
