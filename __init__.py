@@ -169,8 +169,8 @@ class KONWorld(World):
             item_pool.append(self.create_item("Teatime Token"))
 
         if self.options.shuffle_hard_difficulty.value:
-            if self.options.hard_challenge_locations.value == 0 and self.options.hard_clear_locations.value == 0: #If no Hard locations are enabled, convert from Progression to Filler
-                item_table["Hard Difficulty"] = KONItemData("Upgrade", 302, ItemClassification.filler)   
+            if self.options.hard_challenge_locations.value == 0 and self.options.hard_clear_locations.value == 0: #If no Hard locations are enabled, convert from Progression to Useful
+                item_table["Hard Difficulty"] = KONItemData("Upgrade", 302, ItemClassification.useful)   
             item_pool.append(self.create_item("Hard Difficulty"))
         else:
             self.multiworld.push_precollected(self.create_item("Hard Difficulty"))
