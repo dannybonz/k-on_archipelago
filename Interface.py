@@ -354,7 +354,7 @@ class KONInterface:
 
         elif address == self.CURRENT_ITEM_ADDRESS:
             self.current_item = value #Store the current used item
-            await self.write_memory(self.set_unlocked_hard_songs(list(HARD_SONGS.keys()))) #Sets all Hard songs to unlocked, preventing popups at the end of the song
+            await self.write_memory(self.set_unlocked_hard_songs(list(HARD_SONGS.keys()), True)) #Sets all Hard songs to unlocked, preventing popups at the end of the song
 
         elif address == self.CURRENT_EVENT_ADDRESS:
             if not EVENT_TITLES_FROM_INGAME_ID[value] in self.event_clears:
@@ -503,14 +503,14 @@ class KONInterface:
 
         return song_unlock_data
 
-    def set_unlocked_hard_songs(self, unlocked_hard_songs):
+    def set_unlocked_hard_songs(self, unlocked_hard_songs, force_unlock = False):
         hard_song_unlock_data = {}
         for song in HARD_SONGS:
             address = HARD_SONGS[song]["address"]
             if address not in hard_song_unlock_data:
                 hard_song_unlock_data[address] = 0  #Start with all bits cleared
 
-        if self.hard_unlocked: #Only unlock Hard songs if Hard difficulty item has been obtained
+        if self.hard_unlocked or force_unlock: #Only unlock Hard songs if Hard difficulty item has been obtained - or we're forcing them on to prevent popups at the end of a song
             if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
                 if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
                     if not f"{self.goal_song} (Hard)" in unlocked_hard_songs:
