@@ -42,11 +42,11 @@ class KONContext(CommonContext):
 
         self.interface = KONInterface(logger)
         self.tokens_reported = False
-        self.welcomed_player = False
         self.cached_received_items = set()
         self.slot_data: Dict[str, Any] = {}
         self.sent_deaths = 0
         self.snack_cache_retrieved = False
+        self.most_recent_instruction = None
 
     def on_package(self, cmd: str, args: Dict[str, Any]) -> None:
         if cmd == "Connected":
@@ -149,7 +149,7 @@ async def check_game(ctx) -> None:
         if not ctx.slot:
             await asyncio.sleep(1)
             return
-        elif not ctx.welcomed_player:
+        elif not ctx.most_recent_instruction == "welcome":
             #Enable deathlink once connected
             if "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True:
                 await ctx.update_death_link(True)
@@ -158,7 +158,7 @@ async def check_game(ctx) -> None:
 
             logger.info("You are now connected and ready to play. Let's rock!")
             logger.info("Use /progress to see your progress towards unlocking your Goal Song. Use /characters to see your currently unlocked characters.")
-            ctx.welcomed_player = True
+            ctx.most_recent_instruction = "welcome"
 
         checked_locations : Set[int] = set()
 
@@ -316,14 +316,15 @@ async def check_game(ctx) -> None:
             ctx.sent_deaths = ctx.interface.deaths
             await ctx.send_death()
         
-    else:
-        message = "You are not currently connected to an Archipelago server. Connect to an Archipelago server now!"
-        logger.info(message)
+    elif not ctx.most_recent_instruction == "connect":
+        ctx.most_recent_instruction = "connect"
+        logger.info("You are not currently connected to an Archipelago server. Connect to an Archipelago server now!")
 
 async def reconnect_game(ctx) -> None:
-    logger.info("Communication with PPSSPP failed. Please ensure that PPSSPP is open and K-On! After School Live!! is loaded.")
+    if not ctx.most_recent_instruction == "ppsspp":
+        ctx.most_recent_instruction = "ppsspp"
+        logger.info("Communication with PPSSPP failed. Please ensure that PPSSPP is open and K-On! After School Live!! is loaded.")
     await asyncio.sleep(5)
-    logger.info("Restarting communication with PPSSPP...")
     await ctx.interface.connect_to_ppsspp()
 
 def log_characters(ctx) -> None:
