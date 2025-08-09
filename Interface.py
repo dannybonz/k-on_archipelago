@@ -104,6 +104,7 @@ class KONInterface:
         self.deathlink_blocked = False
         self.deaths = 0
         self.hard_unlocked = False
+        self.played_songs = []
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
         try:
@@ -314,10 +315,10 @@ class KONInterface:
             return False
         try:
             pong_waiter = await self.ws.ping()
-            await asyncio.wait_for(pong_waiter, timeout=5)  # Wait for pong reply, timeout after 5 seconds
+            await asyncio.wait_for(pong_waiter, timeout=5)  #Wait for pong reply, timeout after 5 seconds
             return True
         except Exception:
-            return False  # Ping failed or timed out, connection likely dead
+            return False  #Ping failed or timed out, connection likely dead
 
     async def handle_memory(self, response) -> None:
         raw_bytes = base64.b64decode(response["base64"])
@@ -408,6 +409,9 @@ class KONInterface:
         elif address == self.CURRENT_SONG_ADDRESS:
             self.current_song = self.SONG_MAPPING[value]
             if self.current_song in self.songs_received:
+                if not self.current_song in self.played_songs:
+                    self.played_songs.append(self.current_song)
+
                 await self.request_memory(self.CHARACTER_ADDRESS)
             else:
                 await self.resume_emulation() #No check - you shouldn't even HAVE this song!
