@@ -197,8 +197,10 @@ class KONWorld(World):
         if self.options.event_locations.value:
             item_table["Sweets"] = KONItemData("Snacks", SNACKS["Sweets"]["item_id"], ItemClassification.progression)
             item_table["Taiyaki"] = KONItemData("Snacks", SNACKS["Taiyaki"]["item_id"], ItemClassification.progression)
+            item_table["Chocolate"] = KONItemData("Snacks", SNACKS["Chocolate"]["item_id"], ItemClassification.progression)
             item_pool.append(self.create_item("Sweets"))
             item_pool.append(self.create_item("Taiyaki"))
+            item_pool.append(self.create_item("Chocolate"))
 
         #Approximately a third of the junk pool is snacks 
         number_of_snacks = (total_locations - len(item_pool)) / 3

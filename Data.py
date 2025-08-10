@@ -177,7 +177,7 @@ PROPS = {"Tea Set": {"item_id": 401, "address": 0x90b0b6c, "bit": 0},
     "Ui's Phone Number": {"address": 0x90b0b78, "bit": 4}
 }
 
-PROGRESSION_PROPS = ["Sweets", "Taiyaki", "Mio's Bass", "Yui's Guitar", 'Textbook', 'Barnacles', 'Lottery Ticket', 'Radio Cassette Player', 'Castanets', 'Cat Ears', "Ritsu's Drums", 'Photo of the Villa', 'Snowman', 'Shellfish', "Azusa's Guitar", 'Sad Novel', 'Ticket', 'Note', 'Mio Fan Club Poster', 'Tuner', 'Tea Set', 'Documents', 'Purse', 'Parasol', 'Secret Photo', 'Board Game', 'Horror Novel', 'Microphone', 'Picnic Sheet', 'Amp', 'Lyrics Card', 'Kitty Teacup', 'Key'] #All the props that are used to trigger events
+PROGRESSION_PROPS = ["Sweets", "Taiyaki", "Chocolate", "Mio's Bass", "Yui's Guitar", 'Textbook', 'Barnacles', 'Lottery Ticket', 'Radio Cassette Player', 'Castanets', 'Cat Ears', "Ritsu's Drums", 'Photo of the Villa', 'Snowman', 'Shellfish', "Azusa's Guitar", 'Sad Novel', 'Ticket', 'Note', 'Mio Fan Club Poster', 'Tuner', 'Tea Set', 'Documents', 'Purse', 'Parasol', 'Secret Photo', 'Board Game', 'Horror Novel', 'Microphone', 'Picnic Sheet', 'Amp', 'Lyrics Card', 'Kitty Teacup', 'Key'] #All the props that are used to trigger events
 
 PROP_NAME_FROM_ID = {}
 PROP_FLAGS_FROM_ADDRESS = {}
