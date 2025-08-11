@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 
 from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import WebWorld, World
@@ -48,7 +48,10 @@ class KONWorld(World):
     item_name_to_id = {name: data.address for name, data in item_table.items()}
     location_name_to_id = {name: data.address for name, data in full_location_table.items()}
 
+    ut_can_gen_without_yaml = True
+
     def generate_early(self):
+
         self.possible_songs = list(SONGS.keys())
         self.random.shuffle(self.possible_songs)
         self.goal_song = self.possible_songs.pop(-1)
@@ -112,7 +115,19 @@ class KONWorld(World):
 
         if (location_count - (forced_item_count + self.token_count) < 0):
             raise OptionError("Not enough locations are available. Adjust your options to include more locations, then generate again.")
-    
+
+        if hasattr(self.multiworld, "re_gen_passthrough"): #If generated through Universal Tracker passthrough
+            slot_data: dict = self.multiworld.re_gen_passthrough[self.game]
+            self.goal_song = slot_data["goal_song"]
+            self.options.full_band_goal.value = slot_data["full_band_goal"]
+            self.options.matching_outfits_goal.value = slot_data["matching_outfits_goal"]
+            self.options.challenge_locations.value = slot_data["challenge_locations"]
+            self.options.hard_challenge_locations.value = slot_data["hard_challenge_locations"]
+            self.options.hard_clear_locations.value = slot_data["hard_clear_locations"]
+            self.options.event_locations.value = slot_data["event_locations"]
+            self.options.tape_requirement.value = slot_data["tape_requirement"]
+            self.token_requirement = slot_data["token_requirement"]
+
     def fill_slot_data(self) -> dict:
         if self.options.snack_upgrades.value > 0:
             snack_upgrades_enabled = True
@@ -124,6 +139,10 @@ class KONWorld(World):
 
         slot_data_dict = {"full_band_goal": self.options.full_band_goal.value, "matching_outfits_goal": self.options.matching_outfits_goal.value, "challenge_locations": self.options.challenge_locations.value, "hard_challenge_locations": self.options.hard_challenge_locations.value, "hard_clear_locations": self.options.hard_clear_locations.value, "event_locations": self.options.event_locations.value, "goal_song": self.goal_song, "token_requirement": self.token_requirement, "tape_requirement": self.options.tape_requirement.value, "default_food_duration": default_food_duration, "snack_upgrades_enabled": snack_upgrades_enabled, "deathlink_enabled": self.options.death_link.value}
         return slot_data_dict
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str:Any]) -> dict[str:Any]:
+        return slot_data
 
     def create_items(self) -> None:
         item_pool: List[KONItem] = []
