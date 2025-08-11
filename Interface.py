@@ -418,7 +418,6 @@ class KONInterface:
 
         elif address in SNACK_NAME_FROM_ADDRESS:
             snack_name = SNACK_NAME_FROM_ADDRESS[address]
-
             if snack_name in self.snacks_to_add:
                 new_snack_count = value + self.snacks_to_add[snack_name]
                 self.snack_write[address] = new_snack_count
@@ -428,7 +427,7 @@ class KONInterface:
                 next_snack = list(self.snacks_to_add.keys())[0]
                 await self.request_memory(SNACKS[next_snack]["address"], size=1)
             else:
-                await self.write_memory(self.snack_write)
+                await self.write_memory(self.snack_write, size=1)
                 self.snack_write = {}
 
         elif address == self.ITEM_START_ADDRESS:
