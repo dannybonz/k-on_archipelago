@@ -104,7 +104,8 @@ class KONInterface:
         self.deathlink_blocked = False
         self.deaths = 0
         self.hard_unlocked = False
-        self.played_songs = []
+        self.cleared_songs = []
+        self.new_song_clears = False
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
         try:
@@ -389,6 +390,16 @@ class KONInterface:
                     self.hard_rank_clears.append(f"{self.current_song}: A Rank on Hard")
                     self.hard_character_rank_clears.append(f"{self.current_song}: A Rank with {self.current_character} on Hard")
 
+            if not self.current_song in self.cleared_songs:
+                self.cleared_songs[self.current_song] = [self.current_character]
+                if value == 1:
+                    self.cleared_songs[self.current_song].append(f"{self.current_character}_hard")
+            else:
+                self.cleared_songs[self.current_song].append([self.current_character])
+                if value == 1:
+                    self.cleared_songs[self.current_song].append(f"{self.current_character}_hard")
+            self.new_song_clears = True
+
             await self.resume_emulation()
 
         elif address == self.COMBO_ADDRESS:
@@ -409,9 +420,6 @@ class KONInterface:
         elif address == self.CURRENT_SONG_ADDRESS:
             self.current_song = self.SONG_MAPPING[value]
             if self.current_song in self.songs_received:
-                if not self.current_song in self.played_songs:
-                    self.played_songs.append(self.current_song)
-
                 await self.request_memory(self.CHARACTER_ADDRESS)
             else:
                 await self.resume_emulation() #No check - you shouldn't even HAVE this song!

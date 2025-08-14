@@ -58,7 +58,7 @@ class KONContext(CommonContext):
             self.interface.tape_requirement = self.slot_data["tape_requirement"]
             self.interface.matching_outfits_goal = self.slot_data["matching_outfits_goal"]       
             self.deathlink_pending = False
-            self.played_songs = []
+            self.cleared_songs = {}
             self.snack_cache = {}
 
             if "snack_upgrades_enabled" in self.slot_data and self.slot_data["snack_upgrades_enabled"] == True:
@@ -66,10 +66,10 @@ class KONContext(CommonContext):
 
         if cmd == "Retrieved":
             if "keys" in args:
-                if f"k-on_played_songs_{self.team}_{self.slot}" in args["keys"]:
-                    self.played_songs = args["keys"].get(f"k-on_played_songs_{self.team}_{self.slot}", [])
-                    if self.played_songs == None:
-                        self.played_songs = []
+                if f"k-on_cleared_songs_{self.team}_{self.slot}" in args["keys"]:
+                    self.cleared_songs = args["keys"].get(f"k-on_cleared_songs_{self.team}_{self.slot}", {})
+                    if self.cleared_songs == None:
+                        self.cleared_songs = {}
                 if f"k-on_snack_cache_{self.team}_{self.slot}" in args["keys"]:
                     self.snack_cache = args["keys"].get(f"k-on_snack_cache_{self.team}_{self.slot}", {})
                     if self.snack_cache == None:
@@ -154,7 +154,7 @@ async def check_game(ctx) -> None:
             if "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True:
                 await ctx.update_death_link(True)
 
-            await ctx.send_msgs([{"cmd": "Get", "keys": [f"k-on_played_songs_{ctx.team}_{ctx.slot}", f"k-on_snack_cache_{ctx.team}_{ctx.slot}"]}]) #Retrieve previously played songs and update snack cache once connected
+            await ctx.send_msgs([{"cmd": "Get", "keys": [f"k-on_cleared_songs_{ctx.team}_{ctx.slot}", f"k-on_snack_cache_{ctx.team}_{ctx.slot}"]}]) #Retrieve previously played songs and update snack cache once connected
 
             logger.info("You are now connected and ready to play. Let's rock!")
             logger.info("Use /progress to see your progress towards unlocking your Goal Song. Use /characters to see your currently unlocked characters.")
@@ -204,11 +204,11 @@ async def check_game(ctx) -> None:
 
         #Full Band Clear
         if len(set(ctx.interface.characters_received)) >= 5: #Must have obtained all characters in order to start sending Full Band Clear checks
-            for song in ctx.played_songs: #Must have at least played the song once in order to send Full Band Clear check
+            for song in ctx.cleared_songs: #Must have at least played the song once in order to send Full Band Clear check
                 if SONG_CLEARS[f"{song}: Clear"]["location_id"] in ctx.checked_locations and not SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear"]["location_id"] in ctx.checked_locations:
                     full_band_cleared = True
                     for character in CHARACTERS:
-                        if full_band_cleared and not CHARACTER_CLEARS[f"{song}: Clear with {character}"]["location_id"] in ctx.checked_locations:
+                        if full_band_cleared and not character in ctx.cleared_songs[song]:
                             full_band_cleared = False
 
                     if full_band_cleared:
@@ -217,16 +217,22 @@ async def check_game(ctx) -> None:
                 if ctx.slot_data["hard_clear_locations"] > 1 and HARD_SONG_CLEARS[f"{song}: Clear on Hard"]["location_id"] in ctx.checked_locations and not HARD_SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear on Hard"]["location_id"] in ctx.checked_locations:
                     full_band_cleared = True
                     for character in CHARACTERS:
-                        if full_band_cleared and not HARD_CHARACTER_CLEARS[f"{song}: Clear with {character} on Hard"]["location_id"] in ctx.checked_locations:
+                        if full_band_cleared and not f"{character}_hard" in ctx.cleared_songs[song]:
                             full_band_cleared = False
 
                     if full_band_cleared:
                         checked_locations.add(HARD_SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear on Hard"]["location_id"])
 
-        new_songs = [song for song in ctx.interface.played_songs if song not in ctx.played_songs]
-        if new_songs:
-            ctx.played_songs.extend(new_songs)
-            await ctx.send_msgs([{"cmd": "Set", "key": f"k-on_played_songs_{ctx.team}_{ctx.slot}", "default": [], "want_reply": False, "operations": [{"operation": "replace", "value": ctx.played_songs}]}])
+        if ctx.interface.new_song_clears:
+            ctx.interface.new_song_clears = False
+
+            for song in ctx.interface.cleared_songs:
+                if not song in ctx.cleared_songs:
+                    ctx.cleared_songs[song] = ctx.interface.cleared_songs[song]
+                else:
+                    ctx.cleared_songs[song] = list(set(ctx.cleared_songs[song]) | set(ctx.interface.cleared_songs[song]))
+            
+            await ctx.send_msgs([{"cmd": "Set", "key": f"k-on_cleared_songs_{ctx.team}_{ctx.slot}", "default": {}, "want_reply": False, "operations": [{"operation": "replace", "value": ctx.cleared_songs}]}])
 
         checked_locations = checked_locations.difference(ctx.checked_locations)
 
