@@ -7,7 +7,11 @@ def goal_song_unlock_conditions(state, world, player):
         clear_conditions.append(state.has("Teatime Token", player, world.token_requirement))
     if world.tape_requirement > 0:
         clear_conditions.append(state.has("Cassette Tape", player, world.tape_requirement))
-
+    if world.options.matching_outfits_goal.value:
+        outfit_conditions = []
+        for outfit in UNIQUE_OUTFIT_SETS:
+            outfit_conditions.append(state.has(f"Yui's {outfit}", player) and state.has(f"Mio's {outfit}", player) and state.has(f"Ritsu's {outfit}", player) and state.has(f"Mugi's {outfit}", player) and state.has(f"Azusa's {outfit}", player))
+        clear_conditions.append(any(outfit_conditions))
     return clear_conditions
 
 def song_unlock_rule(state, world, player, song):

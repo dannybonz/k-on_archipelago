@@ -125,7 +125,7 @@ class KONWorld(World):
             self.options.hard_challenge_locations.value = slot_data["hard_challenge_locations"]
             self.options.hard_clear_locations.value = slot_data["hard_clear_locations"]
             self.options.event_locations.value = slot_data["event_locations"]
-            self.options.tape_requirement.value = slot_data["tape_requirement"]
+            self.tape_requirement = slot_data["tape_requirement"]
             self.token_requirement = slot_data["token_requirement"]
 
     def fill_slot_data(self) -> dict:
