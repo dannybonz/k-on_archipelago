@@ -94,7 +94,7 @@ class StartingSongsAmount(Range):
     How many songs to begin the game with.
     """
     display_name = "Starting Songs Amount"
-    range_start = 0
+    range_start = 1
     range_end = 18
     default = 3
 
