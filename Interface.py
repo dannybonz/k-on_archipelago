@@ -104,7 +104,7 @@ class KONInterface:
         self.deathlink_blocked = False
         self.deaths = 0
         self.hard_unlocked = False
-        self.cleared_songs = []
+        self.cleared_songs = {}
         self.new_song_clears = False
 
     def get_ppsspp_endpoint(self): #Fetch the PPSSPP communication URL from the API
