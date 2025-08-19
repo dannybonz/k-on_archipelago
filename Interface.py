@@ -395,7 +395,7 @@ class KONInterface:
                 if value == 1:
                     self.cleared_songs[self.current_song].append(f"{self.current_character}_hard")
             else:
-                self.cleared_songs[self.current_song].append([self.current_character])
+                self.cleared_songs[self.current_song].append(self.current_character)
                 if value == 1:
                     self.cleared_songs[self.current_song].append(f"{self.current_character}_hard")
             self.new_song_clears = True
