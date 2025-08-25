@@ -1,4 +1,4 @@
-import websockets, json, requests, struct, base64, asyncio, traceback, ipaddress
+import websockets, json, requests, struct, base64, asyncio, traceback, ipaddress, random
 
 from .Data import EVENT_FLAGS_FROM_ADDRESS, SNACKS, SONGS, SNACK_NAME_FROM_ADDRESS, SONG_FLAGS_FROM_ADDRESS, PROP_FLAGS_FROM_ADDRESS, PROPS, CHARACTERS, OUTFITS, EVENT_TITLES_FROM_INGAME_ID, EVENTS, OUTFIT_MAPPING, HARD_SONGS
 
@@ -103,6 +103,7 @@ class KONInterface:
         self.snack_upgrades_enabled = False
         self.deathlink_blocked = False
         self.deaths = 0
+        self.death_text = ""
         self.hard_unlocked = False
         self.cleared_songs = {}
         self.new_song_clears = False
@@ -352,7 +353,8 @@ class KONInterface:
                     self.logger.info("You don't have this character unlocked! Use /characters to see your current unlocked characters.")
                     await self.trigger_gameover()
                 else:
-                    await self.request_memory(self.CURRENT_ITEM_ADDRESS)
+                    self.death_text = f"{self.current_character} {random.choice(['messed up', 'flubbed it', 'panicked', 'crashed and burned', 'spaced out', 'froze', 'couldn\'t keep up'])} while playing {self.current_song}!" #Prepare deathlink text
+                    await self.request_memory(self.CURRENT_SONG_ADDRESS)
 
         elif address == self.CURRENT_ITEM_ADDRESS:
             self.current_item = value #Store the current used item
@@ -419,10 +421,13 @@ class KONInterface:
 
         elif address == self.CURRENT_SONG_ADDRESS:
             self.current_song = self.SONG_MAPPING[value]
-            if self.current_song in self.songs_received:
-                await self.request_memory(self.CHARACTER_ADDRESS)
-            else:
-                await self.resume_emulation() #No check - you shouldn't even HAVE this song!
+            if self.song_screen == "Results":
+                if self.current_song in self.songs_received:
+                    await self.request_memory(self.CHARACTER_ADDRESS)
+                else:
+                    await self.resume_emulation() #No check - you shouldn't even HAVE this song!
+            elif self.song_screen == "Starting Song":
+                await self.request_memory(self.CURRENT_ITEM_ADDRESS)                
 
         elif address in SNACK_NAME_FROM_ADDRESS:
             snack_name = SNACK_NAME_FROM_ADDRESS[address]

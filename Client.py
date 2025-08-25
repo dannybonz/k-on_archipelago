@@ -205,7 +205,7 @@ async def check_game(ctx) -> None:
         #Full Band Clear
         if len(set(ctx.interface.characters_received)) >= 5: #Must have obtained all characters in order to start sending Full Band Clear checks
             for song in ctx.cleared_songs: #Must have at least played the song once in order to send Full Band Clear check
-                if SONG_CLEARS[f"{song}: Clear"]["location_id"] in ctx.checked_locations and not SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear"]["location_id"] in ctx.checked_locations:
+                if SONG_CLEARS[f"{song}: Clear"]["location_id"] in ctx.checked_locations and not (SONG_COMPLETIONIST_CLEARS[f"{song}: Full Band Clear"]["location_id"] in ctx.checked_locations):
                     full_band_cleared = True
                     for character in CHARACTERS:
                         if full_band_cleared and not character in ctx.cleared_songs[song]:
@@ -320,7 +320,7 @@ async def check_game(ctx) -> None:
             ctx.deathlink_pending = False
         elif "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True and ctx.interface.deaths > ctx.sent_deaths:
             ctx.sent_deaths = ctx.interface.deaths
-            await ctx.send_death()
+            await ctx.send_death(f"{ctx.interface.death_text} ({ctx.player_names[ctx.slot]})")
         
     elif not ctx.most_recent_instruction == "connect":
         ctx.most_recent_instruction = "connect"
