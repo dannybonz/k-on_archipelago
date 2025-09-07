@@ -90,11 +90,11 @@ def set_rules(world: World) -> None:
     for song in SONGS:
         set_song_rules(song, world)
 
-    multiworld.get_location("Event: Album Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Fuwa Fuwa Time")
-    multiworld.get_location("Event: Communication Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Fuwa Fuwa Time")
-    multiworld.get_location("Event: Clock Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Heart Goes Boom!!") and song_unlock_rule(state, world, player, "Girly Storm Sprint Stick")
-    multiworld.get_location("Event: Sing Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Head Over Heels for Giita") and song_unlock_rule(state, world, player, "Curry, Then Rice") 
     if (world.options.event_locations.value):
+        multiworld.get_location("Event: Album Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Fuwa Fuwa Time")
+        multiworld.get_location("Event: Communication Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Fuwa Fuwa Time")
+        multiworld.get_location("Event: Clock Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Heart Goes Boom!!") and song_unlock_rule(state, world, player, "Girly Storm Sprint Stick")
+        multiworld.get_location("Event: Sing Tutorial", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Head Over Heels for Giita") and song_unlock_rule(state, world, player, "Curry, Then Rice") 
         multiworld.get_location("Event: A Sense of Accomplishment!", player).access_rule = lambda state: song_unlock_rule(state, world, player, "Fuwa Fuwa Time")
         multiworld.get_location("Event: Haggling!", player).access_rule = lambda state: state.has("Lottery Ticket", player) and state.has("Purse", player)
         multiworld.get_location("Event: Puni Puni!", player).access_rule = lambda state: state.has("Yui's Guitar", player) 

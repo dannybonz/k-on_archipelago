@@ -2,7 +2,7 @@ from typing import Dict, List, NamedTuple, Optional
 
 from BaseClasses import Region
 from worlds.AutoWorld import World
-from .Locations import KONLocation, easy_event_location_table, song_clear_location_table, character_clear_location_table, event_location_table, completionist_clear_location_table, rank_location_table, combo_location_table, character_rank_location_table, character_combo_location_table, hard_song_clear_location_table, hard_combo_location_table, hard_rank_location_table, hard_character_clear_location_table, hard_completionist_clear_location_table, hard_character_combo_location_table, hard_character_rank_location_table
+from .Locations import KONLocation, song_clear_location_table, character_clear_location_table, event_location_table, completionist_clear_location_table, rank_location_table, combo_location_table, character_rank_location_table, character_combo_location_table, hard_song_clear_location_table, hard_combo_location_table, hard_rank_location_table, hard_character_clear_location_table, hard_completionist_clear_location_table, hard_character_combo_location_table, hard_character_rank_location_table
 from .Data import SONGS
 
 class KONRegionData(NamedTuple):
@@ -45,8 +45,6 @@ def create_regions(world: World) -> None:
 
 	if (world.options.event_locations.value):
 		location_table.update(event_location_table)
-	else:
-		location_table.update(easy_event_location_table)
 
 	if not world.options.full_band_goal.value: #Remove locations that cannot be completed without having already completed your seed
 			location_table = {

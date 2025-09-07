@@ -1,7 +1,7 @@
 from typing import Dict, NamedTuple, Optional
 
 from BaseClasses import Location
-from .Data import TUTORIAL_EVENTS, EVENTS, SONG_CLEARS, CHARACTER_CLEARS, SONG_COMPLETIONIST_CLEARS, SONG_RANK_CLEARS, SONG_COMBO_CLEARS, CHARACTER_RANK_CLEARS, CHARACTER_COMBO_CLEARS, HARD_SONG_CLEARS, HARD_CHARACTER_CLEARS, HARD_SONG_COMPLETIONIST_CLEARS, HARD_CHARACTER_COMBO_CLEARS, HARD_SONG_COMBO_CLEARS, HARD_SONG_RANK_CLEARS, HARD_CHARACTER_RANK_CLEARS
+from .Data import EVENTS, SONG_CLEARS, CHARACTER_CLEARS, SONG_COMPLETIONIST_CLEARS, SONG_RANK_CLEARS, SONG_COMBO_CLEARS, CHARACTER_RANK_CLEARS, CHARACTER_COMBO_CLEARS, HARD_SONG_CLEARS, HARD_CHARACTER_CLEARS, HARD_SONG_COMPLETIONIST_CLEARS, HARD_CHARACTER_COMBO_CLEARS, HARD_SONG_COMBO_CLEARS, HARD_SONG_RANK_CLEARS, HARD_CHARACTER_RANK_CLEARS
 
 class KONLocation(Location):
     game: str = "K-On! After School Live!!"
@@ -67,11 +67,8 @@ for hard_character_combo_name in HARD_CHARACTER_COMBO_CLEARS:
     hard_character_combo_location_table[hard_character_combo_name] = KONLocationData("Hard Character Combos", HARD_CHARACTER_COMBO_CLEARS[hard_character_combo_name]["location_id"])
 
 event_location_table: Dict[str, KONLocationData] = {}
-easy_event_location_table: Dict[str, KONLocationData] = {}
 for event_name in EVENTS:
     event_location_table[event_name] = KONLocationData("Event Clears", EVENTS[event_name]["location_id"])
-    if event_name in TUTORIAL_EVENTS:
-        easy_event_location_table[event_name] = KONLocationData("Event Clears", EVENTS[event_name]["location_id"])
 
 full_location_table: Dict[str, KONLocationData] = {}
 for table in [song_clear_location_table, character_clear_location_table, event_location_table, completionist_clear_location_table, rank_location_table, combo_location_table, character_rank_location_table, character_combo_location_table, hard_song_clear_location_table, hard_completionist_clear_location_table, hard_character_clear_location_table, hard_rank_location_table, hard_combo_location_table, hard_character_combo_location_table, hard_character_rank_location_table]:

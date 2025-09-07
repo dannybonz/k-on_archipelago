@@ -69,52 +69,24 @@ class KONWorld(World):
             matching_outfits = [outfit for outfit in OUTFITS if outfit.startswith(character)]
             self.starting_outfits.append(self.random.choice(matching_outfits))
 
-        self.token_count = self.options.teatime_tokens.value
-        self.tape_requirement = self.options.tape_requirement.value
-
-        if self.token_count == 0 and self.tape_requirement == 0:
-            self.tape_requirement = 18
-
-        forced_item_count = len(self.possible_songs) + len(self.possible_characters) + self.options.snack_upgrades.value
-        if self.options.event_locations.value:
-            forced_item_count += len(PROGRESSION_PROPS)
-        if self.options.matching_outfits_goal.value:
-            forced_item_count += 5
-        if self.options.shuffle_hard_difficulty.value:
-            forced_item_count += 1
-
-        location_count = (len(SONG_COMPLETIONIST_CLEARS) - 1) + (len(CHARACTER_CLEARS) - 5)
-        if self.tape_requirement == 0:
-            location_count = len(SONG_CLEARS) - 1 #-1 for the goal clear
-        if self.options.event_locations.value:
-            location_count += len(EVENTS)
-        if self.options.challenge_locations.value != 0:
-            location_count += (len(SONG_COMBO_CLEARS) - 1) + (len(SONG_RANK_CLEARS) - 1)
-        if self.options.challenge_locations.value == 2:
-            location_count += (len(CHARACTER_COMBO_CLEARS) - 5) + (len(CHARACTER_RANK_CLEARS) - 5)
-        if self.options.hard_clear_locations.value != 0:
-            location_count += len(HARD_SONG_CLEARS) - 1
-        if self.options.hard_clear_locations.value == 2:
-            location_count += (len(HARD_SONG_COMPLETIONIST_CLEARS) - 1) + (len(HARD_CHARACTER_CLEARS) - 5)
-        if self.options.hard_challenge_locations.value != 0:
-            location_count += (len(HARD_SONG_COMBO_CLEARS) - 5) + (len(HARD_SONG_RANK_CLEARS) - 5)
-        if self.options.hard_challenge_locations.value == 2:
-            location_count += (len(HARD_CHARACTER_COMBO_CLEARS) - 5) + (len(HARD_CHARACTER_RANK_CLEARS) - 5)
-
-        if self.token_count > 0:
-            if self.token_count > location_count - forced_item_count: #Lowers the number of Tokens if enough locations do not exist
-                self.token_count = location_count - forced_item_count
-                if self.token_count < 1:
-                    self.token_count = 1
-
+        if self.options.token_percentage.value == 0 or self.options.teatime_tokens.value == 0:
+            self.token_count = 0
+            self.token_requirement = 0
+        else:
+            self.token_count = self.options.teatime_tokens.value
             self.token_requirement = int(self.token_count * (self.options.token_percentage.value/100))
             if self.token_requirement == 0:
                 self.token_requirement = 1
-        else:
-            self.token_requirement = 0
 
-        if (location_count - (forced_item_count + self.token_count) < 0):
-            raise OptionError("Not enough locations are available. Adjust your options to include more locations, then generate again.")
+        self.tape_requirement = self.options.tape_requirement.value
+        if self.token_count == 0 and self.tape_requirement == 0:
+            self.tape_requirement = 18 
+
+        if self.options.matching_outfits_goal.value:
+            possible_goal_outfits = [outfit for outfit in UNIQUE_OUTFIT_SETS if all(outfit not in starting_outfit for starting_outfit in self.starting_outfits)]
+            self.goal_outfit = self.random.choice(possible_goal_outfits)
+        else:
+            self.goal_outfit = None
 
         if hasattr(self.multiworld, "re_gen_passthrough"): #If generated through Universal Tracker passthrough
             slot_data: dict = self.multiworld.re_gen_passthrough[self.game]
@@ -127,6 +99,7 @@ class KONWorld(World):
             self.options.event_locations.value = slot_data["event_locations"]
             self.tape_requirement = slot_data["tape_requirement"]
             self.token_requirement = slot_data["token_requirement"]
+            self.goal_outfit = slot_data["goal_outfit"]
 
     def fill_slot_data(self) -> dict:
         if self.options.snack_upgrades.value > 0:
@@ -137,26 +110,91 @@ class KONWorld(World):
             snack_upgrades_enabled = False
             default_food_duration = 15
 
-        slot_data_dict = {"full_band_goal": self.options.full_band_goal.value, "matching_outfits_goal": self.options.matching_outfits_goal.value, "challenge_locations": self.options.challenge_locations.value, "hard_challenge_locations": self.options.hard_challenge_locations.value, "hard_clear_locations": self.options.hard_clear_locations.value, "event_locations": self.options.event_locations.value, "goal_song": self.goal_song, "token_requirement": self.token_requirement, "tape_requirement": self.options.tape_requirement.value, "default_food_duration": default_food_duration, "snack_upgrades_enabled": snack_upgrades_enabled, "deathlink_enabled": self.options.death_link.value}
+        slot_data_dict = {"goal_outfit": self.goal_outfit, "full_band_goal": self.options.full_band_goal.value, "matching_outfits_goal": self.options.matching_outfits_goal.value, "challenge_locations": self.options.challenge_locations.value, "hard_challenge_locations": self.options.hard_challenge_locations.value, "hard_clear_locations": self.options.hard_clear_locations.value, "event_locations": self.options.event_locations.value, "goal_song": self.goal_song, "token_requirement": self.token_requirement, "tape_requirement": self.options.tape_requirement.value, "default_food_duration": default_food_duration, "snack_upgrades_enabled": snack_upgrades_enabled, "deathlink_enabled": self.options.death_link.value}
         return slot_data_dict
 
     @staticmethod
     def interpret_slot_data(slot_data: dict[str:Any]) -> dict[str:Any]:
         return slot_data
 
+    def pick_progression_items(self):
+        progression_item_names = []
+
+        if self.options.shuffle_hard_difficulty.value and (self.options.hard_challenge_locations.value != 0 or self.options.hard_clear_locations.value != 0):
+            progression_item_names.append("Hard Difficulty")
+
+        progression_item_names += [song for song in SONGS if song not in self.starting_songs and song != self.goal_song]
+        progression_item_names += [playable_character for playable_character in PLAYABLE_CHARACTERS if playable_character not in self.starting_characters]
+
+        if self.options.matching_outfits_goal.value:
+            progression_item_names += [f"{character}'s {self.goal_outfit}" for character in CHARACTERS]
+
+        if self.options.event_locations.value:
+            progression_item_names += PROGRESSION_PROPS
+
+        if self.token_count > 0:
+            progression_item_names += ["Teatime Token"] * self.token_count
+
+        return progression_item_names
+
+    def pick_useful_items(self):
+        useful_item_names = []
+
+        if self.options.shuffle_hard_difficulty.value and (self.options.hard_challenge_locations.value == 0 and self.options.hard_clear_locations.value == 0):
+            useful_item_names.append("Hard Difficulty")
+
+        useful_item_names += ["Snack Upgrade"] * self.options.snack_upgrades.value
+
+        return useful_item_names
+
+    def pick_filler_items(self, number_of_fillers):
+        filler_item_names = []
+
+        number_of_snacks = (number_of_fillers) / 3
+        amount_per_snack = int(number_of_snacks / len(SNACKS))
+        for snack in SNACKS:
+            for x in range (0, amount_per_snack):
+                filler_item_names.append(snack)
+
+        if not self.options.event_locations.value:
+            filler_props = list(PROPS.keys())
+        else:
+            filler_props = [prop for prop in PROPS.keys() if prop not in PROGRESSION_PROPS]
+                
+        if not self.options.matching_outfits_goal:
+            filler_outfits = list(OUTFITS.keys())
+        else:
+            excluded_outfits = [f"{self.random.choice(['Yui', 'Mio', 'Ritsu', 'Mugi', 'Azusa'])}'s {outfit}" for outfit in UNIQUE_OUTFIT_SETS]                
+            filler_outfits = [outfit for outfit in OUTFITS if (not self.goal_outfit in outfit) and (not outfit in excluded_outfits)]          
+
+        potential_filler = filler_props + filler_outfits
+        self.random.shuffle(potential_filler)
+        while len(filler_item_names) < number_of_fillers and len(potential_filler) > 0:
+            filler_item_names.append(potential_filler.pop())
+
+        while len(filler_item_names) < number_of_fillers:
+            filler_item_names.append(self.random.choice(list(SNACKS.keys())))
+
+        return filler_item_names
+
     def create_items(self) -> None:
         item_pool: List[KONItem] = []
-        junk_pool: List[KONItem] = []
+        self.progression_item_names: List[str] = []
+        self.useful_item_names: List[str] = []
+        self.filler_item_names: List[str] = []
+        self.preplaced_progression = ["Hard Difficulty", "Happy End", "Cassette Tape"] + self.starting_characters + self.starting_songs
 
+        #Precollected items
         for starting_song in self.starting_songs:
             self.multiworld.push_precollected(self.create_item(starting_song))
-
-        for starting_char in self.starting_characters:
-            self.multiworld.push_precollected(self.create_item(starting_char))
-
+        for playable_character in self.starting_characters:
+            self.multiworld.push_precollected(self.create_item(playable_character))
         for starting_outfit in self.starting_outfits:
             self.multiworld.push_precollected(self.create_item(starting_outfit))
+        if not self.options.shuffle_hard_difficulty.value:
+            self.multiworld.push_precollected(self.create_item("Hard Difficulty"))
 
+        #Locked items
         if self.options.full_band_goal.value:
             goal_region = self.multiworld.get_region(self.goal_song, self.player)
             self.multiworld.get_location(f"{self.goal_song}: Full Band Clear", self.player).place_locked_item(self.create_item("Happy End")) 
@@ -168,77 +206,17 @@ class KONWorld(World):
                 if not song == self.goal_song:
                     self.multiworld.get_location(f"{song}: Clear", self.player).place_locked_item(self.create_item("Cassette Tape"))
 
-        if self.options.matching_outfits_goal.value: #If using the matching outfits goal, we need to ensure that at least one complete outfit set is available in the pool
-            possible_guaranteed_outfits = []
-            for outfit in UNIQUE_OUTFIT_SETS:
-                if not outfit in ["Winter Outfit"]:
-                    permitted = True
-                    for starting_outfit in self.starting_outfits:
-                        if outfit in starting_outfit:
-                            permitted = False
-                    if permitted:
-                        possible_guaranteed_outfits.append(outfit)
-            guaranteed_outfit_type = self.random.choice(possible_guaranteed_outfits) #This outfit type is guaranteed to be available for all characters
+        self.progression_item_names = self.pick_progression_items()
+        self.useful_item_names = self.pick_useful_items()
 
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
+        if len(self.progression_item_names + self.useful_item_names) > total_locations:
+            raise OptionError(f"Not enough locations are available. Adjust your options to include more locations, then generate again.")
+        
+        self.filler_item_names = self.pick_filler_items(total_locations - len(self.progression_item_names + self.useful_item_names))
 
-        for x in range(0, self.options.snack_upgrades.value):
-            item_pool.append(self.create_item("Snack Upgrade"))
-
-        for x in range(0, self.token_count):
-            item_pool.append(self.create_item("Teatime Token"))
-
-        if self.options.shuffle_hard_difficulty.value:
-            if self.options.hard_challenge_locations.value == 0 and self.options.hard_clear_locations.value == 0: #If no Hard locations are enabled, convert from Progression to Useful
-                item_table["Hard Difficulty"] = KONItemData("Upgrade", 302, ItemClassification.useful)   
-            item_pool.append(self.create_item("Hard Difficulty"))
-        else:
-            self.multiworld.push_precollected(self.create_item("Hard Difficulty"))
-
-        for name, data in item_table.items():
-            if (data.category == "Characters" and name in self.possible_characters) or (data.category == "Songs" and name in self.possible_songs) or (data.category == "Outfits" and self.options.matching_outfits_goal.value and guaranteed_outfit_type in name):
-                if (data.category == "Outfits" and self.options.matching_outfits_goal.value and guaranteed_outfit_type in name):
-                    item_table[name] = KONItemData("Outfits", OUTFITS[name]["item_id"], ItemClassification.progression)
-                item_pool.append(self.create_item(name))
-            elif data.category == "Props":
-                if self.options.event_locations.value:
-                    if data.classification == ItemClassification.filler:
-                        junk_pool.append(name)
-                    else:
-                        item_pool.append(self.create_item(name))
-                else:
-                    item_table[name] = KONItemData("Props", PROPS[name]["item_id"], ItemClassification.filler)
-                    junk_pool.append(name)
-            elif data.category == "Outfits" and self.options.matching_outfits_goal.value and not name in ["Azusa's Old Uniform Outfit", "Yui's School Swimsuit Outfit"]:
-                item_table[name] = KONItemData("Outfits", OUTFITS[name]["item_id"], ItemClassification.progression)
-                junk_pool.append(name) #Even though we mark these progression items, they are not *necessarily* required as long as there is one complete set in the pool. It's fine if they don't get included in the generation.
-            elif data.category in ["Outfits", "Accessories"] and not name in self.starting_outfits:
-                junk_pool.append(name)
-
-        #Progression snacks if Event locations are enabled
-        if self.options.event_locations.value:
-            item_table["Sweets"] = KONItemData("Snacks", SNACKS["Sweets"]["item_id"], ItemClassification.progression)
-            item_table["Taiyaki"] = KONItemData("Snacks", SNACKS["Taiyaki"]["item_id"], ItemClassification.progression)
-            item_table["Chocolate"] = KONItemData("Snacks", SNACKS["Chocolate"]["item_id"], ItemClassification.progression)
-            item_pool.append(self.create_item("Sweets"))
-            item_pool.append(self.create_item("Taiyaki"))
-            item_pool.append(self.create_item("Chocolate"))
-
-        #Approximately a third of the junk pool is snacks 
-        number_of_snacks = (total_locations - len(item_pool)) / 3
-        amount_per_snack = int(number_of_snacks / len(SNACKS))
-        for snack in SNACKS:
-            for x in range (0, amount_per_snack):
-                item_pool.append(self.create_item(snack))
-
-        #Fill remaining spots with outfits and useless collectibles
-        self.random.shuffle(junk_pool)        
-        while len(item_pool) < total_locations - 1 and len(junk_pool) > 0:
-            item_pool.append(self.create_item(junk_pool.pop()))
-
-        #If we ran out of outfits and collectibles, fill the remaining spots with even more random snacks
-        while len(item_pool) < total_locations:
-            item_pool.append(self.create_item(self.random.choice(list(SNACKS.keys()))))
+        for item in self.progression_item_names + self.useful_item_names + self.filler_item_names:
+            item_pool.append(self.create_item(item))
 
         self.multiworld.itempool += item_pool
 
@@ -246,7 +224,14 @@ class KONWorld(World):
         return self.random.choice(list(SNACKS.keys()))
     
     def create_item(self, name: str) -> KONItem:
-        return KONItem(name, item_table[name].classification, item_table[name].address, self.player)
+        if name in self.progression_item_names + self.preplaced_progression:
+            item_classification = ItemClassification.progression
+        elif name in self.useful_item_names:
+            item_classification = ItemClassification.useful
+        else:
+            item_classification = ItemClassification.filler
+
+        return KONItem(name, item_classification, item_table[name].address, self.player)
 
     def set_rules(self) -> None:
         set_rules(self)
