@@ -320,7 +320,7 @@ async def check_game(ctx) -> None:
             ctx.deathlink_pending = False
         elif "deathlink_enabled" in ctx.slot_data and ctx.slot_data["deathlink_enabled"] == True and ctx.interface.deaths > ctx.sent_deaths:
             ctx.sent_deaths = ctx.interface.deaths
-            await ctx.send_death(f"{ctx.interface.death_text} ({ctx.player_names[ctx.slot]})")
+            await ctx.send_death(f"{ctx.player_names[ctx.slot]} {ctx.interface.death_text}")
         
     elif not ctx.most_recent_instruction == "connect":
         ctx.most_recent_instruction = "connect"

@@ -353,7 +353,7 @@ class KONInterface:
                     self.logger.info("You don't have this character unlocked! Use /characters to see your current unlocked characters.")
                     await self.trigger_gameover()
                 else:
-                    self.death_text = f"{self.current_character} {random.choice(['messed up', 'flubbed it', 'panicked', 'crashed and burned', 'spaced out', 'froze', 'couldn\'t keep up'])} while playing {self.current_song}!" #Prepare deathlink text
+                    self.death_text = f"{random.choice(['messed up', 'flubbed it', 'panicked', 'crashed and burned', 'spaced out', 'froze', 'couldn\'t keep up'])} while playing {self.current_song} with {self.current_character}!" #Prepare deathlink text
                     await self.request_memory(self.CURRENT_SONG_ADDRESS)
 
         elif address == self.CURRENT_ITEM_ADDRESS:
