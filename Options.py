@@ -85,7 +85,6 @@ class ShuffleHardDifficulty(Toggle):
 class EventLocations(Toggle):
     """
     Include additional locations for triggering story events. 
-    Please be aware that forced tutorial events will always be locations, regardless of this setting.
     """
     display_name = "Event Locations"
 
