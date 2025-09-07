@@ -171,12 +171,13 @@ class KONWorld(World):
         if self.options.matching_outfits_goal.value: #If using the matching outfits goal, we need to ensure that at least one complete outfit set is available in the pool
             possible_guaranteed_outfits = []
             for outfit in UNIQUE_OUTFIT_SETS:
-                permitted = True
-                for starting_outfit in self.starting_outfits:
-                    if outfit in starting_outfit:
-                        permitted = False
-                if permitted:
-                    possible_guaranteed_outfits.append(outfit)
+                if not outfit in ["Winter Outfit"]:
+                    permitted = True
+                    for starting_outfit in self.starting_outfits:
+                        if outfit in starting_outfit:
+                            permitted = False
+                    if permitted:
+                        possible_guaranteed_outfits.append(outfit)
             guaranteed_outfit_type = self.random.choice(possible_guaranteed_outfits) #This outfit type is guaranteed to be available for all characters
 
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
@@ -196,6 +197,8 @@ class KONWorld(World):
 
         for name, data in item_table.items():
             if (data.category == "Characters" and name in self.possible_characters) or (data.category == "Songs" and name in self.possible_songs) or (data.category == "Outfits" and self.options.matching_outfits_goal.value and guaranteed_outfit_type in name):
+                if (data.category == "Outfits" and self.options.matching_outfits_goal.value and guaranteed_outfit_type in name):
+                    item_table[name] = KONItemData("Outfits", OUTFITS[name]["item_id"], ItemClassification.progression)
                 item_pool.append(self.create_item(name))
             elif data.category == "Props":
                 if self.options.event_locations.value:
