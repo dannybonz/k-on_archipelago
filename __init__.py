@@ -4,7 +4,7 @@ from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from .Items import KONItem, item_ids
-from .Locations import full_location_table
+from .Locations import all_location_ids
 from .Options import KONOptions
 from .Regions import create_regions
 from .Rules import set_rules
@@ -46,7 +46,7 @@ class KONWorld(World):
     topology_present = True
 
     item_name_to_id = item_ids
-    location_name_to_id = {name: data.address for name, data in full_location_table.items()}
+    location_name_to_id = all_location_ids
 
     ut_can_gen_without_yaml = True
 

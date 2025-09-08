@@ -6,70 +6,66 @@ from .Data import EVENTS, SONG_CLEARS, CHARACTER_CLEARS, SONG_COMPLETIONIST_CLEA
 class KONLocation(Location):
     game: str = "K-On! After School Live!!"
 
-class KONLocationData(NamedTuple):
-    category: str
-    address: Optional[int] = None
-
-song_clear_location_table: Dict[str, KONLocationData] = {}
+song_clear_location_ids: Dict[str, int] = {}
 for song_clear_name in SONG_CLEARS:
-    song_clear_location_table[song_clear_name] = KONLocationData("Song Clears", SONG_CLEARS[song_clear_name]["location_id"])
+    song_clear_location_ids[song_clear_name] = SONG_CLEARS[song_clear_name]["location_id"]
 
-character_clear_location_table: Dict[str, KONLocationData] = {}
+character_clear_location_ids: Dict[str, int] = {}
 for character_clear_name in CHARACTER_CLEARS:
-    character_clear_location_table[character_clear_name] = KONLocationData("Character Clears", CHARACTER_CLEARS[character_clear_name]["location_id"])
+    character_clear_location_ids[character_clear_name] = CHARACTER_CLEARS[character_clear_name]["location_id"]
 
-completionist_clear_location_table:  Dict[str, KONLocationData] = {}
+completionist_clear_location_ids:  Dict[str, int] = {}
 for completionist_clear_name in SONG_COMPLETIONIST_CLEARS:
-    completionist_clear_location_table[completionist_clear_name] = KONLocationData("Completionist Clears", SONG_COMPLETIONIST_CLEARS[completionist_clear_name]["location_id"])
+    completionist_clear_location_ids[completionist_clear_name] = SONG_COMPLETIONIST_CLEARS[completionist_clear_name]["location_id"]
 
-rank_location_table:  Dict[str, KONLocationData] = {}
+rank_location_ids:  Dict[str, int] = {}
 for rank_name in SONG_RANK_CLEARS:
-    rank_location_table[rank_name] = KONLocationData("A Ranks", SONG_RANK_CLEARS[rank_name]["location_id"])
+    rank_location_ids[rank_name] = SONG_RANK_CLEARS[rank_name]["location_id"]
 
-combo_location_table:  Dict[str, KONLocationData] = {}
+combo_location_ids:  Dict[str, int] = {}
 for combo_name in SONG_COMBO_CLEARS:
-    combo_location_table[combo_name] = KONLocationData("Combos", SONG_COMBO_CLEARS[combo_name]["location_id"])
+    combo_location_ids[combo_name] = SONG_COMBO_CLEARS[combo_name]["location_id"]
 
-character_rank_location_table:  Dict[str, KONLocationData] = {}
+character_rank_location_ids:  Dict[str, int] = {}
 for character_rank_name in CHARACTER_RANK_CLEARS:
-    character_rank_location_table[character_rank_name] = KONLocationData("Character A Ranks", CHARACTER_RANK_CLEARS[character_rank_name]["location_id"])
+    character_rank_location_ids[character_rank_name] = CHARACTER_RANK_CLEARS[character_rank_name]["location_id"]
 
-character_combo_location_table:  Dict[str, KONLocationData] = {}
+character_combo_location_ids:  Dict[str, int] = {}
 for character_combo_name in CHARACTER_COMBO_CLEARS:
-    character_combo_location_table[character_combo_name] = KONLocationData("Character Combos", CHARACTER_COMBO_CLEARS[character_combo_name]["location_id"])
+    character_combo_location_ids[character_combo_name] = CHARACTER_COMBO_CLEARS[character_combo_name]["location_id"]
 
-hard_song_clear_location_table: Dict[str, KONLocationData] = {}
+hard_song_clear_location_ids: Dict[str, int] = {}
 for hard_song_clear_name in HARD_SONG_CLEARS:
-    hard_song_clear_location_table[hard_song_clear_name] = KONLocationData("Hard Song Clears", HARD_SONG_CLEARS[hard_song_clear_name]["location_id"])
+    hard_song_clear_location_ids[hard_song_clear_name] = HARD_SONG_CLEARS[hard_song_clear_name]["location_id"]
 
-hard_character_clear_location_table: Dict[str, KONLocationData] = {}
+hard_character_clear_location_ids: Dict[str, int] = {}
 for hard_character_clear_name in HARD_CHARACTER_CLEARS:
-    hard_character_clear_location_table[hard_character_clear_name] = KONLocationData("Hard Character Clears", HARD_CHARACTER_CLEARS[hard_character_clear_name]["location_id"])
+    hard_character_clear_location_ids[hard_character_clear_name] = HARD_CHARACTER_CLEARS[hard_character_clear_name]["location_id"]
 
-hard_completionist_clear_location_table:  Dict[str, KONLocationData] = {}
+hard_completionist_clear_location_ids:  Dict[str, int] = {}
 for hard_completionist_clear_name in HARD_SONG_COMPLETIONIST_CLEARS:
-    hard_completionist_clear_location_table[hard_completionist_clear_name] = KONLocationData("Hard Completionist Clears", HARD_SONG_COMPLETIONIST_CLEARS[hard_completionist_clear_name]["location_id"])
+    hard_completionist_clear_location_ids[hard_completionist_clear_name] = HARD_SONG_COMPLETIONIST_CLEARS[hard_completionist_clear_name]["location_id"]
 
-hard_rank_location_table:  Dict[str, KONLocationData] = {}
+hard_rank_location_ids:  Dict[str, int] = {}
 for hard_rank_name in HARD_SONG_RANK_CLEARS:
-    hard_rank_location_table[hard_rank_name] = KONLocationData("Hard A Ranks", HARD_SONG_RANK_CLEARS[hard_rank_name]["location_id"])
+    hard_rank_location_ids[hard_rank_name] = HARD_SONG_RANK_CLEARS[hard_rank_name]["location_id"]
 
-hard_combo_location_table:  Dict[str, KONLocationData] = {}
+hard_combo_location_ids:  Dict[str, int] = {}
 for hard_combo_name in HARD_SONG_COMBO_CLEARS:
-    hard_combo_location_table[hard_combo_name] = KONLocationData("Hard Combos", HARD_SONG_COMBO_CLEARS[hard_combo_name]["location_id"])
+    hard_combo_location_ids[hard_combo_name] = HARD_SONG_COMBO_CLEARS[hard_combo_name]["location_id"]
 
-hard_character_rank_location_table:  Dict[str, KONLocationData] = {}
+hard_character_rank_location_ids:  Dict[str, int] = {}
 for hard_character_rank_name in HARD_CHARACTER_RANK_CLEARS:
-    hard_character_rank_location_table[hard_character_rank_name] = KONLocationData("Hard Character A Ranks", HARD_CHARACTER_RANK_CLEARS[hard_character_rank_name]["location_id"])
+    hard_character_rank_location_ids[hard_character_rank_name] = HARD_CHARACTER_RANK_CLEARS[hard_character_rank_name]["location_id"]
 
-hard_character_combo_location_table:  Dict[str, KONLocationData] = {}
+hard_character_combo_location_ids:  Dict[str, int] = {}
 for hard_character_combo_name in HARD_CHARACTER_COMBO_CLEARS:
-    hard_character_combo_location_table[hard_character_combo_name] = KONLocationData("Hard Character Combos", HARD_CHARACTER_COMBO_CLEARS[hard_character_combo_name]["location_id"])
+    hard_character_combo_location_ids[hard_character_combo_name] = HARD_CHARACTER_COMBO_CLEARS[hard_character_combo_name]["location_id"]
 
-event_location_table: Dict[str, KONLocationData] = {}
+event_location_ids: Dict[str, int] = {}
 for event_name in EVENTS:
-    event_location_table[event_name] = KONLocationData("Event Clears", EVENTS[event_name]["location_id"])
+    event_location_ids[event_name] = EVENTS[event_name]["location_id"]
 
-full_location_table: Dict[str, KONLocationData] = {}
-for table in [song_clear_location_table, character_clear_location_table, event_location_table, completionist_clear_location_table, rank_location_table, combo_location_table, character_rank_location_table, character_combo_location_table, hard_song_clear_location_table, hard_completionist_clear_location_table, hard_character_clear_location_table, hard_rank_location_table, hard_combo_location_table, hard_character_combo_location_table, hard_character_rank_location_table]:
-    full_location_table.update(table)
+all_location_ids: Dict[str, int] = {}
+for location_ids in [song_clear_location_ids, character_clear_location_ids, event_location_ids, completionist_clear_location_ids, rank_location_ids, combo_location_ids, character_rank_location_ids, character_combo_location_ids, hard_song_clear_location_ids, hard_completionist_clear_location_ids, hard_character_clear_location_ids, hard_rank_location_ids, hard_combo_location_ids, hard_character_combo_location_ids, hard_character_rank_location_ids]:
+    all_location_ids.update(location_ids)

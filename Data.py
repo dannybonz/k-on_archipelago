@@ -234,7 +234,7 @@ EVENTS = {"Event: Play Tutorial": {'location_id': 4001, 'address': 0x90b0b8c, 'b
         "Event: Sing Tutorial": {'location_id': 4007, 'address': 0x90b0b8c, 'bit': 6, 'requirements': ['Head Over Heels for Giita', 'Curry, Then Rice'], 'ingame_id': 6},
         "Event: A Sense of Accomplishment!": {'location_id': 4008, 'address': 0x90b0b8c, 'bit': 7, 'requirements': ['Fuwa Fuwa Time'], 'ingame_id': 7},
 
-        "Event: First Live!": {'location_id': 4009, 'address': 0x90b0b8d, 'bit': 0, 'requirements': ["Don't Say Lazy"], 'ingame_id': 8},
+        "Event: First Live!": {'location_id': 4009, 'address': 0x90b0b8d, 'bit': 0, 'requirements': list(SONGS.keys()), 'ingame_id': 8},
 #       "Event: I Love K-On!": {'location_id': 4010, 'address': 0x90b0b8d, 'bit': 1, 'requirements': [], 'ingame_id': 9}, 
 #       "Event: Credits!": {'location_id': 4011, 'address': 0x90b0b8d, 'bit': 2, 'requirements': [], 'ingame_id': 10},
         "Event: Haggling!": {'location_id': 4012, 'address': 0x90b0b8d, 'bit': 3, 'requirements': ['Lottery Ticket', 'Purse'], 'ingame_id': 11},
