@@ -3,7 +3,7 @@ from typing import Dict, List, Any
 from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
-from .Items import KONItem, KONItemData, item_table
+from .Items import KONItem, item_ids
 from .Locations import full_location_table
 from .Options import KONOptions
 from .Regions import create_regions
@@ -45,7 +45,7 @@ class KONWorld(World):
     junk_pool: Dict[str, int]
     topology_present = True
 
-    item_name_to_id = {name: data.address for name, data in item_table.items()}
+    item_name_to_id = item_ids
     location_name_to_id = {name: data.address for name, data in full_location_table.items()}
 
     ut_can_gen_without_yaml = True
@@ -231,7 +231,7 @@ class KONWorld(World):
         else:
             item_classification = ItemClassification.filler
 
-        return KONItem(name, item_classification, item_table[name].address, self.player)
+        return KONItem(name, item_classification, item_ids[name], self.player)
 
     def set_rules(self) -> None:
         set_rules(self)
