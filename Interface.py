@@ -513,7 +513,7 @@ class KONInterface:
                 song_unlock_data[address] = 0  #Start with all bits cleared
 
         if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
-            if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
+            if not (self.matching_outfits_goal == 1 and (None in self.active_outfits.values() or len(set(self.active_outfits.values())) > 1)):
                 if not self.goal_song in unlocked_songs:
                     unlocked_songs.append(self.goal_song) #Goal song unlocked!
 
@@ -531,7 +531,7 @@ class KONInterface:
 
         if self.hard_unlocked or force_unlock: #Only unlock Hard songs if Hard difficulty item has been obtained - or we're forcing them on to prevent popups at the end of a song
             if self.tape_count >= self.tape_requirement and self.token_count >= self.token_requirement:
-                if not (self.matching_outfits_goal == True and len(set(self.active_outfits.values())) > 1):
+                if not (self.matching_outfits_goal == 1 and (None in self.active_outfits.values() or len(set(self.active_outfits.values())) > 1)):
                     if not f"{self.goal_song} (Hard)" in unlocked_hard_songs:
                         unlocked_hard_songs.append(f"{self.goal_song} (Hard)") #Goal song unlocked on Hard!
 
