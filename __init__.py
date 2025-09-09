@@ -79,7 +79,7 @@ class KONWorld(World):
                 self.token_requirement = 1
 
         self.tape_requirement = self.options.tape_requirement.value
-        if self.token_count == 0 and self.tape_requirement == 0:
+        if self.token_count == 0 and self.tape_requirement == 0 and not self.options.matching_outfits_goal.value:
             self.tape_requirement = 18 
 
         if self.options.matching_outfits_goal.value:
