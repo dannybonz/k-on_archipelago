@@ -120,7 +120,7 @@ class KONWorld(World):
     def pick_progression_items(self):
         progression_item_names = []
 
-        if self.options.shuffle_hard_difficulty.value and (self.options.hard_challenge_locations.value != 0 or self.options.hard_clear_locations.value != 0):
+        if self.options.shuffle_hard_difficulty.value and not (self.options.hard_challenge_locations.value == 0 and self.options.hard_clear_locations.value == 0):
             progression_item_names.append("Hard Difficulty")
 
         progression_item_names += [song for song in SONGS if song not in self.starting_songs and song != self.goal_song]
@@ -157,9 +157,9 @@ class KONWorld(World):
                 filler_item_names.append(snack)
 
         if not self.options.event_locations.value:
-            filler_props = list(PROPS.keys())
+            filler_props = [prop for prop in PROPS.keys() if "item_id" in PROPS[prop]]
         else:
-            filler_props = [prop for prop in PROPS.keys() if prop not in PROGRESSION_PROPS]
+            filler_props = [prop for prop in PROPS.keys() if ("item_id" in PROPS[prop] and prop not in PROGRESSION_PROPS)]
                 
         if not self.options.matching_outfits_goal:
             filler_outfits = list(OUTFITS.keys())
@@ -182,7 +182,7 @@ class KONWorld(World):
         self.progression_item_names: List[str] = []
         self.useful_item_names: List[str] = []
         self.filler_item_names: List[str] = []
-        self.preplaced_progression = ["Hard Difficulty", "Happy End", "Cassette Tape"] + self.starting_characters + self.starting_songs
+        self.preplaced_progression = ["Happy End", "Cassette Tape"] + self.starting_characters + self.starting_songs
 
         #Precollected items
         for starting_song in self.starting_songs:
@@ -192,6 +192,7 @@ class KONWorld(World):
         for starting_outfit in self.starting_outfits:
             self.multiworld.push_precollected(self.create_item(starting_outfit))
         if not self.options.shuffle_hard_difficulty.value:
+            self.preplaced_progression.append("Hard Difficulty")
             self.multiworld.push_precollected(self.create_item("Hard Difficulty"))
 
         #Locked items
