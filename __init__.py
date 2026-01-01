@@ -48,6 +48,11 @@ class KONWorld(World):
     item_name_to_id = item_ids
     location_name_to_id = all_location_ids
 
+    item_name_groups = {
+        "characters": {"Playable Yui", "Playable Mio", "Playable Ritsu", "Playable Mugi", "Playable Azusa"},
+        "songs": {"Cagayake!GIRLS", "Don't Say Lazy", "Fuwa Fuwa Time", "My Love is a Stapler", "Calligraphy Pen ~Ballpoint Pen~", "Curry, Then Rice", "Let's Go", "Happy!? Sorry!!", "Sweet Bitter Beauty Song", "Head Over Heels for Giita", "Sunday Siesta", "Heart Goes Boom!!", "Hello Little Girl", "Jajauma Way To Go", "I Go My Own Road", "Dear My Keys", "Humming Bird", "Girly Storm Sprint Stick", "Aim For Happy 100%"}
+    }
+
     ut_can_gen_without_yaml = True
 
     def generate_early(self):
