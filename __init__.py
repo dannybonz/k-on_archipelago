@@ -230,12 +230,15 @@ class KONWorld(World):
         return self.random.choice(list(SNACKS.keys()))
     
     def create_item(self, name: str) -> KONItem:
-        if name in self.progression_item_names + self.preplaced_progression:
+        try:
+            if name in self.progression_item_names + self.preplaced_progression:
+                item_classification = ItemClassification.progression
+            elif name in self.useful_item_names:
+                item_classification = ItemClassification.useful
+            else:
+                item_classification = ItemClassification.filler
+        except:
             item_classification = ItemClassification.progression
-        elif name in self.useful_item_names:
-            item_classification = ItemClassification.useful
-        else:
-            item_classification = ItemClassification.filler
 
         return KONItem(name, item_classification, item_ids[name], self.player)
 
