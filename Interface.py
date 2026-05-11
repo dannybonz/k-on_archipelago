@@ -364,13 +364,16 @@ class KONInterface:
             await self.write_memory(self.set_unlocked_hard_songs(list(HARD_SONGS.keys()), True)) #Sets all Hard songs to unlocked, preventing popups at the end of the song
 
         elif address == self.CURRENT_EVENT_ADDRESS:
-            if not EVENT_TITLES_FROM_INGAME_ID[value] in self.event_clears:
-                self.event_clears.append(EVENT_TITLES_FROM_INGAME_ID[value])
-            if EVENT_TITLES_FROM_INGAME_ID[value] == "Event: Item Tutorial":
-                self.receive_snack("Cake", 1) #Adds a Cake - you need to it to complete the tutorial
-                await self.update_snacks()
-            else:
+            if value not in EVENT_TITLES_FROM_INGAME_ID:
                 await self.resume_emulation()
+            else:
+                if not EVENT_TITLES_FROM_INGAME_ID[value] in self.event_clears:
+                    self.event_clears.append(EVENT_TITLES_FROM_INGAME_ID[value])
+                if EVENT_TITLES_FROM_INGAME_ID[value] == "Event: Item Tutorial":
+                    self.receive_snack("Cake", 1) #Adds a Cake - you need to it to complete the tutorial
+                    await self.update_snacks()
+                else:
+                    await self.resume_emulation()
 
         elif address == self.DIFFICULTY_ADDRESS:
             self.song_clears.append(f"{self.current_song}: Clear")
