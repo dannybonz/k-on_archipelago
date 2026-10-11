@@ -256,7 +256,7 @@ EVENTS = {"Event: Play Tutorial": {'location_id': 4001, 'address': 0x90b0b8c, 'b
         "Event: Azunyan!": {'location_id': 4026, 'address': 0x90b0b8f, 'bit': 1, 'requirements': ['Cat Ears'], 'ingame_id': 25},
         "Event: Sense of Danger!": {'location_id': 4027, 'address': 0x90b0b8f, 'bit': 2, 'requirements': ['Kitty Teacup'], 'ingame_id': 26},
         "Event: Encircled Secret!": {'location_id': 4028, 'address': 0x90b0b8f, 'bit': 3, 'requirements': ['Secret Photo', 'Picnic Sheet'], 'ingame_id': 27},
-        "Event: Tuning!": {'location_id': 4029, 'address': 0x90b0b8f, 'bit': 4, 'requirements': ['Tuner'], 'ingame_id': 28},
+        "Event: Tuning!": {'location_id': 4029, 'address': 0x90b0b8f, 'bit': 4, 'requirements': ['Tuner', 'Photo of the Villa'], 'ingame_id': 28},
         "Event: Barnacles!": {'location_id': 4030, 'address': 0x90b0b8f, 'bit': 5, 'requirements': ['Barnacles', 'Ticket'], 'ingame_id': 29},
         "Event: Resort!": {'location_id': 4031, 'address': 0x90b0b8f, 'bit': 6, 'requirements': ['Parasol', 'Ticket'], 'ingame_id': 30},
         "Event: Unique!": {'location_id': 4032, 'address': 0x90b0b8f, 'bit': 7, 'requirements': ['Snowman'], 'ingame_id': 31},
