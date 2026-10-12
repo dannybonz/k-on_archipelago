@@ -4,7 +4,7 @@ from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from .Items import KONItem, item_ids
-from .Locations import all_location_ids
+from .Locations import all_location_ids, location_groups
 from .Options import KONOptions
 from .Regions import create_regions
 from .Rules import set_rules
@@ -52,6 +52,8 @@ class KONWorld(World):
         "characters": {"Playable Yui", "Playable Mio", "Playable Ritsu", "Playable Mugi", "Playable Azusa"},
         "songs": {"Cagayake!GIRLS", "Don't Say Lazy", "Fuwa Fuwa Time", "My Love is a Stapler", "Calligraphy Pen ~Ballpoint Pen~", "Curry, Then Rice", "Let's Go", "Happy!? Sorry!!", "Sweet Bitter Beauty Song", "Head Over Heels for Giita", "Sunday Siesta", "Heart Goes Boom!!", "Hello Little Girl", "Jajauma Way To Go", "I Go My Own Road", "Dear My Keys", "Humming Bird", "Girly Storm Sprint Stick", "Aim For Happy 100%"}
     }
+    
+    location_name_groups = location_groups
 
     ut_can_gen_without_yaml = True
 

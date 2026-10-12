@@ -69,3 +69,7 @@ for event_name in EVENTS:
 all_location_ids: Dict[str, int] = {}
 for location_ids in [song_clear_location_ids, character_clear_location_ids, event_location_ids, completionist_clear_location_ids, rank_location_ids, combo_location_ids, character_rank_location_ids, character_combo_location_ids, hard_song_clear_location_ids, hard_completionist_clear_location_ids, hard_character_clear_location_ids, hard_rank_location_ids, hard_combo_location_ids, hard_character_combo_location_ids, hard_character_rank_location_ids]:
     all_location_ids.update(location_ids)
+
+location_groups = {}
+for song in ["Cagayake!GIRLS", "Don't Say Lazy", "Fuwa Fuwa Time", "My Love is a Stapler", "Calligraphy Pen ~Ballpoint Pen~", "Curry, Then Rice", "Let's Go", "Happy!? Sorry!!", "Sweet Bitter Beauty Song", "Head Over Heels for Giita", "Sunday Siesta", "Heart Goes Boom!!", "Hello Little Girl", "Jajauma Way To Go", "I Go My Own Road", "Dear My Keys", "Humming Bird", "Girly Storm Sprint Stick", "Aim For Happy 100%"]:
+    location_groups[song] = {location_name for location_name in all_location_ids.keys() if song in location_name}
